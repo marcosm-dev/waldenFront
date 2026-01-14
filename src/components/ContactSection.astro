@@ -1,0 +1,111 @@
+---
+// Contact Section - Diseño Lovable con fondo forest
+interface Props {
+	title?: string;
+	subtitle?: string;
+	description?: string;
+	email?: string;
+	instagram?: string;
+	location?: string;
+}
+
+const {
+	title = "¿Listo para tu próxima aventura?",
+	subtitle = "Contacto",
+	description = "Escríbenos y cuéntanos qué experiencia te gustaría vivir. Te responderemos lo antes posible para organizar tu escapada.",
+	email = "hola@waldenadventures.com",
+	instagram = "@waldenadventuresgc",
+	location = "Gran Canaria, España"
+} = Astro.props;
+---
+
+<section id="contact" class="py-24 md:py-32 bg-forest">
+	<div class="container mx-auto px-6">
+		<div class="max-w-4xl mx-auto text-center">
+			<p class="font-body text-ocean-light text-sm tracking-[0.2em] uppercase mb-4">
+				{subtitle}
+			</p>
+			<h2 class="font-heading text-4xl md:text-5xl lg:text-6xl text-cream mb-6">
+				{title}
+			</h2>
+			<p class="font-body text-cream/80 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+				{description}
+			</p>
+
+			<div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+				<a
+					href={`mailto:${email}`}
+					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-cream text-forest hover:bg-cream/90 font-body"
+				>
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<rect width="20" height="16" x="2" y="4" rx="2"></rect>
+						<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+					</svg>
+					Enviar mensaje
+				</a>
+				<a
+					href="https://wa.me/34600000000"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 border-2 border-cream/60 text-cream hover:bg-cream hover:text-forest font-body"
+				>
+					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+					</svg>
+					Llamar ahora
+				</a>
+			</div>
+
+			<div class="grid sm:grid-cols-3 gap-8 pt-10 border-t border-cream/20">
+				<!-- Ubicación -->
+				<div class="text-center">
+					<div class="w-12 h-12 rounded-full bg-cream/10 flex items-center justify-center mx-auto mb-4">
+						<svg class="text-ocean-light" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+							<circle cx="12" cy="10" r="3"></circle>
+						</svg>
+					</div>
+					<p class="font-body text-cream font-medium mb-1">Ubicación</p>
+					<p class="font-body text-cream/70 text-sm">{location}</p>
+				</div>
+
+				<!-- Email -->
+				<div class="text-center">
+					<div class="w-12 h-12 rounded-full bg-cream/10 flex items-center justify-center mx-auto mb-4">
+						<svg class="text-ocean-light" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect width="20" height="16" x="2" y="4" rx="2"></rect>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+						</svg>
+					</div>
+					<p class="font-body text-cream font-medium mb-1">Email</p>
+					<a
+						href={`mailto:${email}`}
+						class="font-body text-cream/70 text-sm hover:text-cream transition-colors"
+					>
+						{email}
+					</a>
+				</div>
+
+				<!-- Instagram -->
+				<div class="text-center">
+					<div class="w-12 h-12 rounded-full bg-cream/10 flex items-center justify-center mx-auto mb-4">
+						<svg class="text-ocean-light" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+							<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+							<line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+						</svg>
+					</div>
+					<p class="font-body text-cream font-medium mb-1">Instagram</p>
+					<a
+						href="https://instagram.com/waldenadventuresgc"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="font-body text-cream/70 text-sm hover:text-cream transition-colors"
+					>
+						{instagram}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

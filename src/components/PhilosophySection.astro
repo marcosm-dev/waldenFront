@@ -1,26 +1,44 @@
 ---
-const features = [
-	{
-		icon: "users",
-		title: "Grupos pequeños",
-		description: "Máximo 8 personas por experiencia",
-	},
-	{
-		icon: "clock",
-		title: "Ritmo cómodo",
-		description: "Sin prisas, para disfrutar cada momento",
-	},
-	{
-		icon: "heart",
-		title: "Sin experiencia previa",
-		description: "Actividades accesibles para todos",
-	},
-	{
-		icon: "leaf",
-		title: "Respeto por el entorno",
-		description: "Ambiente íntimo y sostenible",
-	},
-];
+interface PhilosophyItem {
+	icon: "heart" | "users" | "leaf" | "clock";
+	title: string;
+	description: string;
+}
+
+interface Props {
+	subtitle?: string;
+	title?: string;
+	description?: string;
+	items?: PhilosophyItem[];
+}
+
+const {
+	subtitle = "Nuestra filosofía",
+	title = "El objetivo no es hacer más, sino disfrutar más",
+	description = "Trabajamos siempre con grupos reducidos, a un ritmo accesible y con atención al detalle, para que cada salida sea una experiencia íntima, auténtica y sin prisas.",
+	items = [
+		{
+			icon: "users",
+			title: "Grupos pequeños",
+			description: "Máximo 8 personas por experiencia",
+		},
+		{
+			icon: "clock",
+			title: "Ritmo cómodo",
+			description: "Sin prisas, para disfrutar cada momento",
+		},
+		{
+			icon: "heart",
+			title: "Sin experiencia previa",
+			description: "Actividades accesibles para todos",
+		},
+		{
+			icon: "leaf",
+			title: "Respeto por el entorno",
+			description: "Ambiente íntimo y sostenible",
+		},
+	],
+} = Astro.props;
 ---
 
 <section id="philosophy" class="py-24 md:py-32 bg-background">
@@ -30,18 +48,16 @@ const features = [
 				<!-- Text Content -->
 				<div>
 					<p class="font-body text-ocean text-sm tracking-[0.2em] uppercase mb-4">
-						Nuestra filosofía
+						{subtitle}
 					</p>
 					<h2 class="font-heading text-4xl md:text-5xl text-foreground mb-6 leading-tight">
-						El objetivo no es hacer más, sino disfrutar más
+						{title}
 					</h2>
 					<p class="font-body text-muted-foreground text-lg leading-relaxed mb-8">
-						Trabajamos siempre con grupos reducidos, a un ritmo accesible y
-						con atención al detalle, para que cada salida sea una
-						experiencia íntima, auténtica y sin prisas.
+						{description}
 					</p>
 					<div class="grid sm:grid-cols-2 gap-6">
-						{features.map((feature) => (
+						{items.map((feature) => (
 							<div class="flex items-start gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors duration-300">
 								<div class="p-2 rounded-lg bg-ocean/10">
 									{feature.icon === "users" && (

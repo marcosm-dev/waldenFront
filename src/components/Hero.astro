@@ -1,7 +1,7 @@
 ---
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/effect-fade";
+import "../lib/effects/effect-super-flow.css";
 
 import { Image } from "astro:assets";
 import img01 from "../assets/images/01.jpg";
@@ -10,31 +10,99 @@ import img03 from "../assets/images/03.jpg";
 import img04 from "../assets/images/04.jpg";
 import img05 from "../assets/images/05.jpg";
 
-const slides = [
-	{ image: img01, alt: "Kayak en la costa de Gran Canaria" },
-	{ image: img02, alt: "Caminata por los pinares" },
-	{ image: img03, alt: "Paddle surf al atardecer" },
-	{ image: img04, alt: "Comida al aire libre" },
-	{ image: img05, alt: "Aventura en la naturaleza" },
+interface SlideData {
+	title: string;
+	subtitle?: string;
+	image: string;
+	alt: string;
+}
+
+interface Props {
+	title?: string;
+	subtitle?: string;
+	description?: string;
+	ctaPrimary?: string;
+	ctaSecondary?: string;
+	slides?: SlideData[];
+}
+
+const {
+	title = "Experiencias al aire libre en Gran Canaria para disfrutar con calma",
+	subtitle = "Gran Canaria, España",
+	description = "Creamos experiencias al aire libre pensadas para quienes quieren desconectar del ritmo diario, disfrutar de la naturaleza y compartir buenos momentos en un entorno cuidado y tranquilo.",
+	ctaPrimary = "Descubre nuestras experiencias",
+	ctaSecondary = "Contactar",
+	slides: propsSlides,
+} = Astro.props;
+
+// Mapeo de imágenes locales
+const imageMap: Record<string, ImageMetadata> = {
+	"/images/01.jpg": img01,
+	"/images/02.jpg": img02,
+	"/images/03.jpg": img03,
+	"/images/04.jpg": img04,
+	"/images/05.jpg": img05,
+};
+
+// Slides con títulos sincronizados (configurables desde WordPress)
+const defaultSlides: SlideData[] = [
+	{
+		title: "Kayak en la costa",
+		subtitle: "Explora el mar",
+		image: "/images/01.jpg",
+		alt: "Kayak en la costa de Gran Canaria"
+	},
+	{
+		title: "Caminatas por los pinares",
+		subtitle: "Conecta con la naturaleza",
+		image: "/images/02.jpg",
+		alt: "Caminata por los pinares"
+	},
+	{
+		title: "Paddle surf al atardecer",
+		subtitle: "Equilibrio y paz",
+		image: "/images/03.jpg",
+		alt: "Paddle surf al atardecer"
+	},
+	{
+		title: "Comida al aire libre",
+		subtitle: "Sabores auténticos",
+		image: "/images/04.jpg",
+		alt: "Comida al aire libre"
+	},
+	{
+		title: "Aventura en grupo",
+		subtitle: "Momentos compartidos",
+		image: "/images/05.jpg",
+		alt: "Aventura en la naturaleza"
+	},
 ];
+
+const slides = propsSlides || defaultSlides;
+
+// Función para obtener la imagen
+const getImage = (path: string) => imageMap[path] || img01;
 ---
 
-<section class="relative min-h-screen flex items-center justify-center overflow-hidden">
-	<!-- Swiper Background -->
-	<div class="swiper-hero absolute inset-0">
+<section class="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
+	<!-- Swiper Background con Super Flow Effect -->
+	<div class="swiper swiper-hero absolute inset-0 z-0">
 		<div class="swiper-wrapper">
-			{slides.map((slide) => (
-				<div class="swiper-slide">
-					<Image
-						src={slide.image}
-						alt={slide.alt}
-						class="w-full h-full object-cover"
-						widths={[640, 1024, 1920]}
-						sizes="100vw"
-					/>
+			{slides.map((slide, index) => (
+				<div class="swiper-slide" data-slide-index={index}>
+					<div class="super-flow-image">
+						<Image
+							src={getImage(slide.image)}
+							alt={slide.alt}
+							class="w-full h-full object-cover"
+							widths={[640, 1024, 1920]}
+							sizes="100vw"
+						/>
+					</div>
 				</div>
 			))}
 		</div>
+		<div class="swiper-pagination"></div>
 	</div>
 
 	<!-- Gradient Overlay -->
@@ -43,48 +111,65 @@ const slides = [
 	<!-- Content -->
 	<div class="relative z-10 container mx-auto px-6 text-center">
 		<div class="max-w-4xl mx-auto">
+			<!-- Slide subtitle - dinámico -->
 			<p
-				class="font-body text-cream/90 text-sm tracking-[0.3em] uppercase mb-6 animate-fade-in"
-				style="animation-delay: 0.2s; animation-fill-mode: both;"
+				id="hero-slide-subtitle"
+				class="font-body text-terracotta text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
 			>
-				Gran Canaria, España
+				{slides[0]?.subtitle || ""}
 			</p>
+
+			<!-- Slide title - dinámico -->
+			<h2
+				id="hero-slide-title"
+				class="font-heading text-3xl md:text-4xl lg:text-5xl text-cream font-medium leading-tight mb-6 transition-all duration-500"
+			>
+				{slides[0]?.title || ""}
+			</h2>
+
+			<!-- Separador -->
+			<div class="w-16 h-0.5 bg-terracotta/60 mx-auto mb-6"></div>
+
+			<!-- Subtítulo fijo -->
+			<p
+				class="font-body text-cream/80 text-sm tracking-[0.2em] uppercase mb-4"
+			>
+				{subtitle}
+			</p>
+
+			<!-- Título principal fijo -->
 			<h1
-				class="font-heading text-5xl md:text-7xl lg:text-8xl text-cream font-medium leading-tight mb-6 animate-fade-in"
-				style="animation-delay: 0.4s; animation-fill-mode: both;"
+				class="font-heading text-4xl md:text-5xl lg:text-6xl text-cream font-medium leading-tight mb-6"
 			>
-				Experiencias al aire libre para disfrutar sin prisas
+				{title}
 			</h1>
+
+			<!-- Descripción -->
 			<p
-				class="font-body text-cream/90 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in"
-				style="animation-delay: 0.6s; animation-fill-mode: both;"
+				class="font-body text-cream/85 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
 			>
-				Creamos experiencias al aire libre diseñadas para quienes desean
-				desconectar de la rutina, disfrutar de la naturaleza y compartir
-				buenos momentos en un entorno tranquilo y cuidado.
+				{description}
 			</p>
+
+			<!-- CTAs -->
 			<div
-				class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
-				style="animation-delay: 0.8s; animation-fill-mode: both;"
+				class="flex flex-col sm:flex-row gap-4 justify-center"
 			>
 				<a
 					href="#experiences"
-					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-cream text-forest hover:bg-cream/90 font-body"
+					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-terracotta text-cream hover:bg-terracotta/90 font-body shadow-lg"
 				>
-					Descubre nuestras experiencias
+					{ctaPrimary}
 				</a>
 				<a
 					href="#contact"
 					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 border-2 border-cream/60 text-cream hover:bg-cream hover:text-forest font-body"
 				>
-					Contactar
+					{ctaSecondary}
 				</a>
 			</div>
 		</div>
 	</div>
-
-	<!-- Swiper Pagination -->
-	<div class="swiper-pagination-hero absolute bottom-24 left-1/2 -translate-x-1/2 z-10"></div>
 
 	<!-- Scroll Indicator -->
 	<a
@@ -98,42 +183,48 @@ const slides = [
 	</a>
 </section>
 
+<!-- Datos de slides para JavaScript -->
+<script define:vars={{ slidesData: slides }}>
+	window.heroSlidesData = slidesData;
+</script>
+
 <style>
+	.hero-section {
+		min-height: 100vh;
+		min-height: 100dvh;
+	}
+
 	.swiper-hero {
 		width: 100%;
 		height: 100%;
 	}
 
 	.swiper-hero .swiper-slide {
-		width: 100%;
-		height: 100%;
+		height: 100vh;
+		height: 100dvh;
 	}
 
-	.swiper-hero .swiper-slide img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
+	/* Override super-flow content para ocultar títulos del slider */
+	.swiper-hero .super-flow-content {
+		display: none !important;
 	}
 
-	/* Pagination styles */
-	.swiper-pagination-hero {
-		display: flex;
-		gap: 8px;
-		justify-content: center;
+	/* Pagination styling */
+	.swiper-hero :global(.swiper-pagination) {
+		bottom: 100px !important;
 	}
 
-	.swiper-pagination-hero :global(.swiper-pagination-bullet) {
+	.swiper-hero :global(.swiper-pagination-bullet) {
+		background: rgba(255, 255, 255, 0.5);
+		opacity: 1;
 		width: 10px;
 		height: 10px;
-		background: hsl(var(--cream) / 0.4);
-		border-radius: 50%;
-		opacity: 1;
-		transition: all 0.3s ease;
 	}
 
-	.swiper-pagination-hero :global(.swiper-pagination-bullet-active) {
-		background: hsl(var(--cream));
-		transform: scale(1.2);
+	.swiper-hero :global(.swiper-pagination-bullet-active) {
+		background: #C4704F; /* terracotta */
+		width: 30px;
+		border-radius: 5px;
 	}
 
 	@keyframes float {
@@ -148,28 +239,90 @@ const slides = [
 	.animate-float {
 		animation: float 2s ease-in-out infinite;
 	}
+
+	/* Animación de fade para cambio de texto */
+	.text-fade-out {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+
+	.text-fade-in {
+		opacity: 1;
+		transform: translateY(0);
+	}
 </style>
 
 <script>
 	import Swiper from "swiper";
-	import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+	import { Autoplay, Pagination } from "swiper/modules";
+	import EffectSuperFlow from "../lib/effects/effect-super-flow.esm.js";
 
-	new Swiper(".swiper-hero", {
-		modules: [Autoplay, Pagination, EffectFade],
-		effect: "fade",
-		fadeEffect: {
-			crossFade: true
-		},
+	// Elementos del DOM
+	const slideTitle = document.getElementById('hero-slide-title');
+	const slideSubtitle = document.getElementById('hero-slide-subtitle');
+
+	// Obtener datos de slides
+	const slidesData = (window as any).heroSlidesData || [];
+
+	// Función para actualizar texto con animación
+	const updateSlideText = (index: number) => {
+		const slide = slidesData[index];
+		if (!slide || !slideTitle || !slideSubtitle) return;
+
+		// Fade out
+		slideTitle.style.opacity = '0';
+		slideTitle.style.transform = 'translateY(-10px)';
+		slideSubtitle.style.opacity = '0';
+		slideSubtitle.style.transform = 'translateY(-10px)';
+
+		// Update text after fade out
+		setTimeout(() => {
+			slideTitle.textContent = slide.title || '';
+			slideSubtitle.textContent = slide.subtitle || '';
+
+			// Fade in
+			slideTitle.style.opacity = '1';
+			slideTitle.style.transform = 'translateY(0)';
+			slideSubtitle.style.opacity = '1';
+			slideSubtitle.style.transform = 'translateY(0)';
+		}, 300);
+	};
+
+	// Inicializar Swiper
+	const swiper = new Swiper(".swiper-hero", {
+		direction: "horizontal",
+		modules: [EffectSuperFlow, Autoplay, Pagination],
+		effect: "super-flow",
 		slidesPerView: 1,
 		loop: true,
-		speed: 1500,
+		pagination: {
+			el: ".swiper-pagination",
+			clickable: true,
+		},
+		superFlowEffect: {
+			fragments: 3,
+			fragmentBlur: true,
+			fragmentBorderWidth: 2,
+			scaleDuration: 4000,
+			contentOffset: 5,
+			contentScale: 1.2,
+			mainImageScale: 1.1,
+			level1Scale: 1.15,
+			level2Scale: 1.2,
+			level3Scale: 1.25,
+		},
+		speed: 1000,
+		grabCursor: true,
 		autoplay: {
 			delay: 5000,
 			disableOnInteraction: false,
 		},
-		pagination: {
-			el: ".swiper-pagination-hero",
-			clickable: true,
+		on: {
+			slideChange: function() {
+				// Obtener índice real (considerando loop)
+				const realIndex = this.realIndex;
+				updateSlideText(realIndex);
+			},
 		},
 	});
 </script>

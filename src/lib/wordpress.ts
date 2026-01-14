@@ -404,3 +404,171 @@ export function formatDate(dateString: string, locale = 'es-ES'): string {
 		day: 'numeric',
 	});
 }
+
+// ============================================
+// CUSTOM POST TYPES - HERO SLIDES
+// ============================================
+
+export interface WPHeroSlide {
+	id: number;
+	title: { rendered: string };
+	content: { rendered: string };
+	featured_media: number;
+	meta: {
+		slide_subtitle?: string;
+		slide_order?: number;
+	};
+	_embedded?: {
+		'wp:featuredmedia'?: WPMedia[];
+	};
+}
+
+/**
+ * Obtiene los slides del hero desde WordPress
+ * Requiere un CPT 'hero_slide' configurado en WordPress
+ */
+export async function getHeroSlides(): Promise<WPHeroSlide[]> {
+	try {
+		return await fetchWithCache<WPHeroSlide[]>('/hero_slide', {
+			per_page: 10,
+			orderby: 'menu_order',
+			order: 'asc',
+			_embed: true,
+		});
+	} catch (error) {
+		console.warn('Hero slides CPT not found, using defaults');
+		return [];
+	}
+}
+
+// ============================================
+// CUSTOM POST TYPES - TESTIMONIALS
+// ============================================
+
+export interface WPTestimonial {
+	id: number;
+	title: { rendered: string };
+	content: { rendered: string };
+	meta: {
+		testimonial_experience?: string;
+		testimonial_location?: string;
+		testimonial_rating?: number;
+		testimonial_date?: string;
+	};
+}
+
+/**
+ * Obtiene los testimonios desde WordPress
+ * Requiere un CPT 'testimonial' configurado en WordPress
+ */
+export async function getTestimonials(): Promise<WPTestimonial[]> {
+	try {
+		return await fetchWithCache<WPTestimonial[]>('/testimonial', {
+			per_page: 10,
+			orderby: 'date',
+			order: 'desc',
+		});
+	} catch (error) {
+		console.warn('Testimonials CPT not found, using defaults');
+		return [];
+	}
+}
+
+// ============================================
+// CUSTOM POST TYPES - EXPERIENCES
+// ============================================
+
+export interface WPExperience {
+	id: number;
+	title: { rendered: string };
+	content: { rendered: string };
+	featured_media: number;
+	meta: {
+		experience_icon?: string;
+		experience_order?: number;
+	};
+	_embedded?: {
+		'wp:featuredmedia'?: WPMedia[];
+	};
+}
+
+/**
+ * Obtiene las experiencias desde WordPress
+ * Requiere un CPT 'experience' configurado en WordPress
+ */
+export async function getExperiences(): Promise<WPExperience[]> {
+	try {
+		return await fetchWithCache<WPExperience[]>('/experience', {
+			per_page: 10,
+			orderby: 'menu_order',
+			order: 'asc',
+			_embed: true,
+		});
+	} catch (error) {
+		console.warn('Experiences CPT not found, using defaults');
+		return [];
+	}
+}
+
+// ============================================
+// CUSTOM POST TYPES - PRICING
+// ============================================
+
+export interface WPPricing {
+	id: number;
+	title: { rendered: string };
+	content: { rendered: string };
+	meta: {
+		pricing_price?: string;
+		pricing_order?: number;
+	};
+}
+
+/**
+ * Obtiene los precios desde WordPress
+ * Requiere un CPT 'pricing' configurado en WordPress
+ */
+export async function getPricing(): Promise<WPPricing[]> {
+	try {
+		return await fetchWithCache<WPPricing[]>('/pricing', {
+			per_page: 10,
+			orderby: 'menu_order',
+			order: 'asc',
+		});
+	} catch (error) {
+		console.warn('Pricing CPT not found, using defaults');
+		return [];
+	}
+}
+
+// ============================================
+// SITE SETTINGS (via Options API or ACF)
+// ============================================
+
+export interface WPSiteSettings {
+	hero_title?: string;
+	hero_subtitle?: string;
+	hero_description?: string;
+	hero_cta_primary?: string;
+	hero_cta_secondary?: string;
+	contact_email?: string;
+	contact_phone?: string;
+	contact_whatsapp?: string;
+	contact_instagram?: string;
+	contact_location?: string;
+}
+
+/**
+ * Obtiene las configuraciones del sitio desde WordPress
+ * Requiere ACF Options Page o similar
+ */
+export async function getSiteSettings(): Promise<WPSiteSettings | null> {
+	try {
+		// Endpoint personalizado que necesitas crear en WordPress
+		// usando register_rest_route o ACF to REST API
+		return await fetchWithCache<WPSiteSettings>('/site-settings');
+	} catch (error) {
+		console.warn('Site settings not found, using defaults');
+		return null;
+	}
+}

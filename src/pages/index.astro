@@ -8,24 +8,60 @@ import Hero from '../components/Hero.astro';
 import ExperiencesSection from '../components/ExperiencesSection.astro';
 import PhilosophySection from '../components/PhilosophySection.astro';
 import PricingSection from '../components/PricingSection.astro';
-import BookingSection from '../components/BookingSection.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import TestimonialsSection from '../components/TestimonialsSection.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { getPageData } from '../lib/mock-data';
+
+// Obtener datos mockeados (en el futuro vendrán de WordPress)
+const data = await getPageData();
 ---
 
 <!doctype html>
 <html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={data.site.title} description={data.site.description} />
 	</head>
 	<body class="min-h-screen">
-		<Header />
+		<Header siteTitle={data.site.title} />
 		<main>
-			<Hero />
+			<Hero
+				title={data.hero.title}
+				subtitle={data.hero.subtitle}
+				description={data.hero.description}
+				ctaPrimary={data.hero.ctaPrimary}
+				ctaSecondary={data.hero.ctaSecondary}
+				slides={data.hero.slides}
+			/>
 			<ExperiencesSection />
-			<PhilosophySection />
+			<PhilosophySection
+				subtitle={data.philosophy.subtitle}
+				title={data.philosophy.title}
+				description={data.philosophy.description}
+				items={data.philosophy.items}
+			/>
 			<PricingSection />
-			<BookingSection />
+			<TestimonialsSection
+				subtitle={data.testimonials.subtitle}
+				title={data.testimonials.title}
+				description={data.testimonials.description}
+				testimonials={data.testimonials.testimonials}
+			/>
+			<ContactSection
+				title={data.contact.title}
+				subtitle={data.contact.subtitle}
+				description={data.contact.description}
+				email={data.contact.email}
+				instagram={data.contact.instagram}
+				location={data.contact.location}
+			/>
 		</main>
-		<Footer />
+		<Footer
+			siteTitle={data.site.title}
+			description={data.footer.description}
+			email={data.footer.email}
+			instagram={data.footer.instagram}
+			instagramUrl={data.footer.instagramUrl}
+			copyright={data.footer.copyright}
+		/>
 	</body>
 </html>

@@ -1,21 +1,124 @@
 ---
-const today = new Date();
+interface Props {
+	siteTitle?: string;
+	description?: string;
+	email?: string;
+	instagram?: string;
+	instagramUrl?: string;
+	copyright?: string;
+}
+
+const {
+	siteTitle = "Walden Adventures",
+	description = "Experiencias al aire libre en Gran Canaria para reconectar con la naturaleza y disfrutar sin prisas.",
+	email = "hola@waldenadventures.com",
+	instagram = "@waldenadventuresgc",
+	instagramUrl = "https://instagram.com/waldenadventuresgc",
+	copyright = `© ${new Date().getFullYear()} Walden Adventures. Todos los derechos reservados.`,
+} = Astro.props;
 ---
 
-<footer class="py-8 bg-foreground">
+<footer class="py-16 bg-foreground">
 	<div class="container mx-auto px-6">
-		<div class="flex flex-col md:flex-row items-center justify-between gap-4">
-			<div class="flex items-center gap-2">
-				<span class="font-heading text-lg text-cream">
-					Walden Adventures
-				</span>
-				<span class="text-xs font-body tracking-widest text-cream/60">
-					GC
-				</span>
+		<div class="max-w-6xl mx-auto">
+			<div class="grid md:grid-cols-3 gap-12 mb-12">
+				<!-- Brand -->
+				<div>
+					<div class="flex items-center gap-2 mb-4">
+						<div class="w-10 h-10 rounded-full bg-terracotta flex items-center justify-center">
+							<svg
+								width="22"
+								height="22"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="white"
+								stroke-width="2.5"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							>
+								<path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+							</svg>
+						</div>
+						<span class="font-heading text-xl text-cream">
+							{siteTitle}
+						</span>
+						<span class="text-xs font-body tracking-widest text-cream/60">
+							GC
+						</span>
+					</div>
+					<p class="font-body text-cream/70 text-sm leading-relaxed">
+						{description}
+					</p>
+				</div>
+
+				<!-- Contact -->
+				<div>
+					<h4 class="font-heading text-lg text-cream mb-4">Contacto</h4>
+					<ul class="space-y-3">
+						<li>
+							<a
+								href={`mailto:${email}`}
+								class="font-body text-cream/70 text-sm hover:text-cream transition-colors flex items-center gap-2"
+							>
+								<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<rect width="20" height="16" x="2" y="4" rx="2"></rect>
+									<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+								</svg>
+								{email}
+							</a>
+						</li>
+						<li>
+							<a
+								href={instagramUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="font-body text-cream/70 text-sm hover:text-cream transition-colors flex items-center gap-2"
+							>
+								<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+									<rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+									<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+									<line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+								</svg>
+								{instagram}
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Links -->
+				<div>
+					<h4 class="font-heading text-lg text-cream mb-4">Navegación</h4>
+					<ul class="space-y-3">
+						<li>
+							<a href="#experiences" class="font-body text-cream/70 text-sm hover:text-cream transition-colors">
+								Experiencias
+							</a>
+						</li>
+						<li>
+							<a href="#philosophy" class="font-body text-cream/70 text-sm hover:text-cream transition-colors">
+								Filosofía
+							</a>
+						</li>
+						<li>
+							<a href="#pricing" class="font-body text-cream/70 text-sm hover:text-cream transition-colors">
+								Precios
+							</a>
+						</li>
+						<li>
+							<a href="#contact" class="font-body text-cream/70 text-sm hover:text-cream transition-colors">
+								Contacto
+							</a>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<p class="font-body text-sm text-cream/50">
-				&copy; {today.getFullYear()} Walden Adventures GC. Todos los derechos reservados.
-			</p>
+
+			<!-- Bottom Bar -->
+			<div class="pt-8 border-t border-cream/10">
+				<p class="font-body text-sm text-cream/50 text-center">
+					{copyright}
+				</p>
+			</div>
 		</div>
 	</div>
 </footer>

@@ -1,10 +1,16 @@
 ---
-import { SITE_LOGO } from '../consts';
+interface Props {
+	siteTitle?: string;
+}
+
+const { siteTitle = "Walden Adventures" } = Astro.props;
 
 const navLinks = [
 	{ href: "#experiences", label: "Experiencias" },
 	{ href: "#philosophy", label: "Filosofía" },
 	{ href: "#pricing", label: "Precios" },
+	{ href: "#testimonials", label: "Opiniones" },
+	{ href: "#contact", label: "Contacto" },
 ];
 ---
 
@@ -14,15 +20,26 @@ const navLinks = [
 >
 	<div class="container mx-auto px-6 flex items-center justify-between">
 		<a href="#" class="flex items-center gap-3">
-			<img
-				src={SITE_LOGO}
-				alt="Walden Adventures"
-				class="header-logo w-10 h-10 rounded-full object-cover transition-all duration-300"
-			/>
+			<!-- Logo - Icono naranja con borde naranja -->
+			<div class="header-logo w-10 h-10 rounded-full bg-transparent border-2 border-terracotta flex items-center justify-center transition-all duration-300">
+				<svg
+					class="logo-icon"
+					width="20"
+					height="20"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
+				</svg>
+			</div>
 			<span
-				class="header-title font-heading text-2xl font-semibold transition-colors duration-300 text-cream"
+				class="header-title font-heading text-2xl font-semibold transition-colors duration-300 text-cream drop-shadow-sm"
 			>
-				Walden Adventures
+				{siteTitle}
 			</span>
 			<span
 				class="header-subtitle text-sm font-body tracking-widest transition-colors duration-300 text-cream/80"
@@ -36,14 +53,14 @@ const navLinks = [
 			{navLinks.map((link) => (
 				<a
 					href={link.href}
-					class="nav-link font-body text-sm tracking-wide transition-all duration-300 hover:opacity-70 text-cream"
+					class="nav-link font-body text-sm tracking-wide transition-all duration-300 hover:opacity-70 text-cream drop-shadow-sm"
 				>
 					{link.label}
 				</a>
 			))}
 			<a
-				href="#pricing"
-				class="btn-reservar inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 transition-all duration-300 border border-cream/60 text-cream hover:bg-cream hover:text-forest"
+				href="#contact"
+				class="btn-reservar inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 transition-all duration-300 bg-terracotta text-cream hover:bg-terracotta/90 font-body shadow-md"
 			>
 				Reservar
 			</a>
@@ -57,7 +74,7 @@ const navLinks = [
 		>
 			<svg
 				id="menu-icon"
-				class="menu-icon text-cream transition-colors duration-300"
+				class="menu-icon text-cream drop-shadow-sm transition-colors duration-300"
 				width="24"
 				height="24"
 				viewBox="0 0 24 24"
@@ -73,7 +90,7 @@ const navLinks = [
 			</svg>
 			<svg
 				id="close-icon"
-				class="menu-icon hidden text-cream transition-colors duration-300"
+				class="menu-icon hidden text-cream drop-shadow-sm transition-colors duration-300"
 				width="24"
 				height="24"
 				viewBox="0 0 24 24"
@@ -92,20 +109,20 @@ const navLinks = [
 	<!-- Mobile Menu -->
 	<div
 		id="mobile-menu"
-		class="md:hidden hidden absolute top-full left-0 right-0 bg-background/98 backdrop-blur-md shadow-card animate-fade-in"
+		class="md:hidden hidden absolute top-full left-0 right-0 bg-cream/98 backdrop-blur-md shadow-card"
 	>
 		<nav class="container mx-auto px-6 py-6 flex flex-col gap-4">
 			{navLinks.map((link) => (
 				<a
 					href={link.href}
-					class="mobile-nav-link font-body text-foreground py-2 border-b border-border"
+					class="mobile-nav-link font-body text-forest py-2 border-b border-forest/10"
 				>
 					{link.label}
 				</a>
 			))}
 			<a
-				href="#pricing"
-				class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 mt-2 transition-colors"
+				href="#contact"
+				class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium bg-terracotta text-cream hover:bg-terracotta/90 h-10 px-4 py-2 mt-2 transition-colors font-body"
 			>
 				Reservar
 			</a>
@@ -113,12 +130,30 @@ const navLinks = [
 	</div>
 </header>
 
+<style>
+	/* Text shadow for better readability over images */
+	.drop-shadow-sm {
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	}
+
+	/* Logo icon color */
+	.logo-icon {
+		color: #C4704F; /* terracotta */
+	}
+
+	/* Scrolled state logo */
+	.header-scrolled .logo-icon {
+		color: #C4704F;
+	}
+</style>
+
 <script>
 	const header = document.getElementById('main-header');
 	const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 	const mobileMenu = document.getElementById('mobile-menu');
 	const menuIcon = document.getElementById('menu-icon');
 	const closeIcon = document.getElementById('close-icon');
+	const headerLogo = document.querySelector('.header-logo') as HTMLElement;
 	const headerTitle = document.querySelector('.header-title');
 	const headerSubtitle = document.querySelector('.header-subtitle');
 	const navLinks = document.querySelectorAll('.nav-link');
@@ -134,48 +169,57 @@ const navLinks = [
 
 		if (isScrolled) {
 			header?.classList.remove('bg-transparent', 'py-6');
-			header?.classList.add('bg-background/95', 'backdrop-blur-md', 'shadow-soft', 'py-4');
+			header?.classList.add('bg-cream/98', 'backdrop-blur-md', 'shadow-soft', 'py-4', 'header-scrolled');
 
-			headerTitle?.classList.remove('text-cream');
+			// Logo mantiene borde naranja pero fondo cream
+			headerLogo?.classList.remove('bg-transparent');
+			headerLogo?.classList.add('bg-cream');
+
+			headerTitle?.classList.remove('text-cream', 'drop-shadow-sm');
 			headerTitle?.classList.add('text-forest');
 
 			headerSubtitle?.classList.remove('text-cream/80');
-			headerSubtitle?.classList.add('text-muted-foreground');
+			headerSubtitle?.classList.add('text-forest/60');
 
 			navLinks.forEach(link => {
-				link.classList.remove('text-cream');
-				link.classList.add('text-foreground');
+				link.classList.remove('text-cream', 'drop-shadow-sm');
+				link.classList.add('text-forest');
 			});
 
 			menuIcons.forEach(icon => {
-				icon.classList.remove('text-cream');
-				icon.classList.add('text-foreground');
+				icon.classList.remove('text-cream', 'drop-shadow-sm');
+				icon.classList.add('text-forest');
 			});
 
-			btnReservar?.classList.remove('border-cream/60', 'text-cream', 'hover:bg-cream', 'hover:text-forest');
-			btnReservar?.classList.add('bg-primary', 'text-primary-foreground', 'hover:bg-primary/90', 'border-transparent');
+			// Botón reservar siempre naranja
+			btnReservar?.classList.remove('shadow-md');
+			btnReservar?.classList.add('shadow-sm');
 		} else {
 			header?.classList.add('bg-transparent', 'py-6');
-			header?.classList.remove('bg-background/95', 'backdrop-blur-md', 'shadow-soft', 'py-4');
+			header?.classList.remove('bg-cream/98', 'backdrop-blur-md', 'shadow-soft', 'py-4', 'header-scrolled');
 
-			headerTitle?.classList.add('text-cream');
+			// Logo transparente sobre hero
+			headerLogo?.classList.add('bg-transparent');
+			headerLogo?.classList.remove('bg-cream');
+
+			headerTitle?.classList.add('text-cream', 'drop-shadow-sm');
 			headerTitle?.classList.remove('text-forest');
 
 			headerSubtitle?.classList.add('text-cream/80');
-			headerSubtitle?.classList.remove('text-muted-foreground');
+			headerSubtitle?.classList.remove('text-forest/60');
 
 			navLinks.forEach(link => {
-				link.classList.add('text-cream');
-				link.classList.remove('text-foreground');
+				link.classList.add('text-cream', 'drop-shadow-sm');
+				link.classList.remove('text-forest');
 			});
 
 			menuIcons.forEach(icon => {
-				icon.classList.add('text-cream');
-				icon.classList.remove('text-foreground');
+				icon.classList.add('text-cream', 'drop-shadow-sm');
+				icon.classList.remove('text-forest');
 			});
 
-			btnReservar?.classList.add('border-cream/60', 'text-cream', 'hover:bg-cream', 'hover:text-forest');
-			btnReservar?.classList.remove('bg-primary', 'text-primary-foreground', 'hover:bg-primary/90', 'border-transparent');
+			btnReservar?.classList.add('shadow-md');
+			btnReservar?.classList.remove('shadow-sm');
 		}
 	};
 
