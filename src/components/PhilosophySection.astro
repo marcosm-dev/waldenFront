@@ -1,0 +1,113 @@
+---
+const features = [
+	{
+		icon: "users",
+		title: "Grupos pequeños",
+		description: "Máximo 8 personas por experiencia",
+	},
+	{
+		icon: "clock",
+		title: "Ritmo cómodo",
+		description: "Sin prisas, para disfrutar cada momento",
+	},
+	{
+		icon: "heart",
+		title: "Sin experiencia previa",
+		description: "Actividades accesibles para todos",
+	},
+	{
+		icon: "leaf",
+		title: "Respeto por el entorno",
+		description: "Ambiente íntimo y sostenible",
+	},
+];
+---
+
+<section id="philosophy" class="py-24 md:py-32 bg-background">
+	<div class="container mx-auto px-6">
+		<div class="max-w-6xl mx-auto">
+			<div class="grid lg:grid-cols-2 gap-16 items-center">
+				<!-- Text Content -->
+				<div>
+					<p class="font-body text-ocean text-sm tracking-[0.2em] uppercase mb-4">
+						Nuestra filosofía
+					</p>
+					<h2 class="font-heading text-4xl md:text-5xl text-foreground mb-6 leading-tight">
+						El objetivo no es hacer más, sino disfrutar más
+					</h2>
+					<p class="font-body text-muted-foreground text-lg leading-relaxed mb-8">
+						Trabajamos siempre con grupos reducidos, a un ritmo accesible y
+						con atención al detalle, para que cada salida sea una
+						experiencia íntima, auténtica y sin prisas.
+					</p>
+					<div class="grid sm:grid-cols-2 gap-6">
+						{features.map((feature) => (
+							<div class="flex items-start gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors duration-300">
+								<div class="p-2 rounded-lg bg-ocean/10">
+									{feature.icon === "users" && (
+										<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+											<circle cx="9" cy="7" r="4"></circle>
+											<path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+											<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+										</svg>
+									)}
+									{feature.icon === "clock" && (
+										<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<circle cx="12" cy="12" r="10"></circle>
+											<polyline points="12 6 12 12 16 14"></polyline>
+										</svg>
+									)}
+									{feature.icon === "heart" && (
+										<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
+										</svg>
+									)}
+									{feature.icon === "leaf" && (
+										<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+											<path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+										</svg>
+									)}
+								</div>
+								<div>
+									<h4 class="font-heading text-lg text-foreground mb-1">
+										{feature.title}
+									</h4>
+									<p class="font-body text-sm text-muted-foreground">
+										{feature.description}
+									</p>
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
+
+				<!-- Visual Element -->
+				<div class="relative">
+					<div class="absolute -top-8 -right-8 w-64 h-64 bg-ocean/10 rounded-full blur-3xl"></div>
+					<div class="absolute -bottom-8 -left-8 w-48 h-48 bg-terracotta/10 rounded-full blur-3xl"></div>
+					<div class="relative bg-card rounded-3xl p-8 md:p-12 shadow-card border border-border">
+						<blockquote class="font-heading text-2xl md:text-3xl text-foreground italic leading-relaxed mb-6">
+							"Sin estrés, sin competición, sin necesidad de demostrar nada.
+							Solo tú, la naturaleza y buena compañía."
+						</blockquote>
+						<div class="flex items-center gap-4">
+							<div class="w-12 h-12 rounded-full bg-ocean/20 flex items-center justify-center">
+								<span class="font-heading text-xl text-ocean">W</span>
+							</div>
+							<div>
+								<p class="font-body font-medium text-foreground">
+									Walden Adventures GC
+								</p>
+								<p class="font-body text-sm text-muted-foreground">
+									Gran Canaria
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
