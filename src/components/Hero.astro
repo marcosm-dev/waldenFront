@@ -6,26 +6,24 @@ import "../lib/effects/effect-super-flow.css";
 import type { StrapiSlide } from "../lib/data";
 
 interface Props {
-	title?: string;
-	subtitle?: string;
-	description?: string;
-	ctaPrimary?: string;
-	ctaSecondary?: string;
-	ctaPrimaryHref?: string;
-	ctaSecondaryHref?: string;
+	title?: string | null;
+	subtitle?: string | null;
+	description?: string | null;
+	ctaPrimary?: string | null;
+	ctaSecondary?: string | null;
+	ctaPrimaryHref?: string | null;
+	ctaSecondaryHref?: string | null;
 	slides?: StrapiSlide[];
 }
 
-const {
-	title = "Experiencias al aire libre para disfrutar sin prisas",
-	subtitle = "Gran Canaria, España",
-	description = "Creamos experiencias al aire libre diseñadas para quienes desean desconectar de la rutina, disfrutar de la naturaleza y compartir buenos momentos en un entorno tranquilo y cuidado.",
-	ctaPrimary = "Descubre nuestras experiencias",
-	ctaSecondary = "Contactar",
-	ctaPrimaryHref = "#experiences",
-	ctaSecondaryHref = "#contact",
-	slides: propsSlides,
-} = Astro.props;
+// Valores por defecto
+const defaultTitle = "Experiencias al aire libre para disfrutar sin prisas";
+const defaultSubtitle = "Gran Canaria, España";
+const defaultDescription = "Creamos experiencias al aire libre diseñadas para quienes desean desconectar de la rutina, disfrutar de la naturaleza y compartir buenos momentos en un entorno tranquilo y cuidado.";
+const defaultCtaPrimary = "Descubre nuestras experiencias";
+const defaultCtaSecondary = "Contactar";
+const defaultCtaPrimaryHref = "#experiences";
+const defaultCtaSecondaryHref = "#contact";
 
 // Slides por defecto como fallback
 const defaultSlides: StrapiSlide[] = [
@@ -34,7 +32,17 @@ const defaultSlides: StrapiSlide[] = [
 	{ id: "3", title: "Paddle surf al atardecer", subtitle: "Equilibrio y paz", description: null, image: { alternativeText: "Paddle surf", name: "paddle", url: "/images/03.jpg", formats: null } },
 ];
 
-const slides: StrapiSlide[] = propsSlides ?? defaultSlides;
+const props = Astro.props;
+
+// Asignar valores con fallback a defaults (maneja null y undefined)
+const title = props.title ?? defaultTitle;
+const subtitle = props.subtitle ?? defaultSubtitle;
+const description = props.description ?? defaultDescription;
+const ctaPrimary = props.ctaPrimary ?? defaultCtaPrimary;
+const ctaSecondary = props.ctaSecondary ?? defaultCtaSecondary;
+const ctaPrimaryHref = props.ctaPrimaryHref ?? defaultCtaPrimaryHref;
+const ctaSecondaryHref = props.ctaSecondaryHref ?? defaultCtaSecondaryHref;
+const slides: StrapiSlide[] = props.slides ?? defaultSlides;
 
 // Obtener URL principal de imagen
 const getImageUrl = (slide: StrapiSlide): string => {
