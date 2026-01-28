@@ -1,0 +1,169 @@
+---
+interface Props {
+	variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'hero' | 'heroOutline' | 'ocean';
+	size?: 'default' | 'sm' | 'lg' | 'xl' | 'icon';
+	href?: string;
+	class?: string;
+	type?: 'button' | 'submit' | 'reset';
+}
+
+const {
+	variant = 'default',
+	size = 'default',
+	href,
+	class: className = '',
+	type = 'button',
+	...rest
+} = Astro.props;
+
+const isLink = !!href;
+const Element = isLink ? 'a' : 'button';
+
+// Base classes
+const baseClasses = 'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 font-body';
+
+// Variant classes
+const variantClasses = {
+	default: 'btn-default',
+	destructive: 'btn-destructive',
+	outline: 'btn-outline',
+	secondary: 'btn-secondary',
+	ghost: 'btn-ghost',
+	link: 'btn-link',
+	hero: 'btn-hero',
+	heroOutline: 'btn-hero-outline',
+	ocean: 'btn-ocean',
+};
+
+// Size classes
+const sizeClasses = {
+	default: 'h-10 px-4 py-2 text-sm',
+	sm: 'h-9 rounded-md px-3 text-sm',
+	lg: 'h-12 px-8 text-base',
+	xl: 'h-14 px-10 text-lg',
+	icon: 'h-10 w-10',
+};
+
+const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`;
+---
+
+{isLink ? (
+	<a href={href} class={classes} {...rest}>
+		<slot />
+	</a>
+) : (
+	<button type={type} class={classes} {...rest}>
+		<slot />
+	</button>
+)}
+
+<style is:global>
+	/* Default - Verde (Primary) con texto blanco */
+	.btn-default {
+		background-color: hsl(158 35% 25%); /* --primary/forest */
+		color: hsl(45 30% 97%); /* --primary-foreground/cream */
+		box-shadow: 0 4px 20px -4px hsl(158 35% 25% / 0.1);
+	}
+
+	.btn-default:hover {
+		background-color: hsl(158 35% 25% / 0.9);
+		box-shadow: 0 8px 30px -8px hsl(158 35% 25% / 0.15);
+	}
+
+	/* Destructive */
+	.btn-destructive {
+		background-color: hsl(0 84.2% 60.2%);
+		color: hsl(45 30% 97%);
+	}
+
+	.btn-destructive:hover {
+		background-color: hsl(0 84.2% 60.2% / 0.9);
+	}
+
+	/* Outline - Borde verde, fondo transparente */
+	.btn-outline {
+		border: 2px solid hsl(158 35% 25%);
+		background-color: transparent;
+		color: hsl(158 35% 25%);
+	}
+
+	.btn-outline:hover {
+		background-color: hsl(158 35% 25%);
+		color: hsl(45 30% 97%);
+	}
+
+	/* Secondary */
+	.btn-secondary {
+		background-color: hsl(35 40% 88%);
+		color: hsl(150 25% 15%);
+	}
+
+	.btn-secondary:hover {
+		background-color: hsl(35 40% 88% / 0.8);
+	}
+
+	/* Ghost */
+	.btn-ghost {
+		background-color: transparent;
+		color: inherit;
+	}
+
+	.btn-ghost:hover {
+		background-color: hsl(200 55% 45% / 0.1);
+		color: hsl(200 55% 45%);
+	}
+
+	/* Link */
+	.btn-link {
+		background-color: transparent;
+		color: hsl(158 35% 25%);
+		text-decoration-line: underline;
+		text-underline-offset: 4px;
+	}
+
+	.btn-link:hover {
+		text-decoration-line: underline;
+	}
+
+	/* Hero - Fondo crema, texto verde */
+	.btn-hero {
+		background-color: hsl(45 30% 97%); /* cream */
+		color: hsl(158 35% 25%); /* forest */
+		border: 2px solid hsl(45 30% 97%);
+		font-weight: 600;
+		letter-spacing: 0.025em;
+		box-shadow: 0 20px 50px -15px hsl(158 35% 25% / 0.2);
+	}
+
+	.btn-hero:hover {
+		background-color: transparent;
+		color: hsl(45 30% 97%);
+		box-shadow: 0 4px 20px -4px hsl(158 35% 25% / 0.1);
+	}
+
+	/* Hero Outline - Transparente con borde crema */
+	.btn-hero-outline {
+		background-color: transparent;
+		color: hsl(45 30% 97%); /* cream */
+		border: 2px solid hsl(45 30% 97%);
+		font-weight: 600;
+		letter-spacing: 0.025em;
+	}
+
+	.btn-hero-outline:hover {
+		background-color: hsl(45 30% 97%);
+		color: hsl(158 35% 25%); /* forest */
+	}
+
+	/* Ocean - Azul océano */
+	.btn-ocean {
+		background-color: hsl(200 55% 45%);
+		color: hsl(45 30% 97%);
+		box-shadow: 0 4px 20px -4px hsl(200 55% 45% / 0.1);
+	}
+
+	.btn-ocean:hover {
+		background-color: hsl(200 45% 65%);
+		box-shadow: 0 8px 30px -8px hsl(200 55% 45% / 0.15);
+	}
+</style>

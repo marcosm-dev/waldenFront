@@ -11,33 +11,34 @@ interface Props {
 	description?: string;
 	ctaPrimary?: string;
 	ctaSecondary?: string;
+	ctaPrimaryHref?: string;
+	ctaSecondaryHref?: string;
 	slides?: StrapiSlide[];
 }
 
 const {
-	title = "Experiencias al aire libre en Gran Canaria para disfrutar con calma",
+	title = "Experiencias al aire libre para disfrutar sin prisas",
 	subtitle = "Gran Canaria, España",
-	description = "Creamos experiencias al aire libre pensadas para quienes quieren desconectar del ritmo diario, disfrutar de la naturaleza y compartir buenos momentos en un entorno cuidado y tranquilo.",
+	description = "Creamos experiencias al aire libre diseñadas para quienes desean desconectar de la rutina, disfrutar de la naturaleza y compartir buenos momentos en un entorno tranquilo y cuidado.",
 	ctaPrimary = "Descubre nuestras experiencias",
 	ctaSecondary = "Contactar",
+	ctaPrimaryHref = "#experiences",
+	ctaSecondaryHref = "#contact",
 	slides: propsSlides,
 } = Astro.props;
 
-// Slides por defecto
+// Slides por defecto como fallback
 const defaultSlides: StrapiSlide[] = [
 	{ id: "1", title: "Kayak en la costa", subtitle: "Explora el mar", description: null, image: { alternativeText: "Kayak en la costa", name: "kayak", url: "/images/01.jpg", formats: null } },
 	{ id: "2", title: "Caminatas por los pinares", subtitle: "Conecta con la naturaleza", description: null, image: { alternativeText: "Caminata por los pinares", name: "caminata", url: "/images/02.jpg", formats: null } },
 	{ id: "3", title: "Paddle surf al atardecer", subtitle: "Equilibrio y paz", description: null, image: { alternativeText: "Paddle surf", name: "paddle", url: "/images/03.jpg", formats: null } },
-	{ id: "4", title: "Comida al aire libre", subtitle: "Sabores auténticos", description: null, image: { alternativeText: "Comida al aire libre", name: "comida", url: "/images/04.jpg", formats: null } },
-	{ id: "5", title: "Aventura en grupo", subtitle: "Momentos compartidos", description: null, image: { alternativeText: "Aventura en grupo", name: "aventura", url: "/images/05.jpg", formats: null } },
 ];
 
-const slides = propsSlides || defaultSlides;
+const slides: StrapiSlide[] = propsSlides ?? defaultSlides;
 
-// Obtener URL principal de imagen (la original es la de mayor calidad)
+// Obtener URL principal de imagen
 const getImageUrl = (slide: StrapiSlide): string => {
 	if (!slide.image) return "/images/01.jpg";
-	// La URL principal es la imagen original (mayor resolución)
 	return slide.image.url;
 };
 
@@ -48,30 +49,23 @@ const getImageSrcset = (slide: StrapiSlide): string | undefined => {
 	const formats = slide.image.formats;
 	const srcsetParts: string[] = [];
 
-	// Añadir cada formato disponible con su ancho
-	// Strapi genera: thumbnail ~235w, small ~500w, medium ~750w, large ~1000w
 	if (formats.small?.url) srcsetParts.push(`${formats.small.url} 500w`);
 	if (formats.medium?.url) srcsetParts.push(`${formats.medium.url} 750w`);
 	if (formats.large?.url) srcsetParts.push(`${formats.large.url} 1000w`);
-	// La imagen original para pantallas grandes (asumimos ~1920w o más)
 	if (slide.image.url) srcsetParts.push(`${slide.image.url} 1920w`);
 
 	return srcsetParts.length > 0 ? srcsetParts.join(', ') : undefined;
 };
 
-// Sizes para el hero fullscreen
-// - Móvil: 100vw (imagen ocupa todo el ancho)
-// - El navegador elegirá el formato más apropiado según el viewport
 const imageSizes = "100vw";
 
-// Obtener alt de imagen
 const getImageAlt = (slide: StrapiSlide): string => {
 	return slide.image?.alternativeText || slide.title;
 };
 ---
 
 <section class="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
-	<!-- Swiper Background con Super Flow Effect -->
+	<!-- Swiper Background Fullscreen -->
 	<div class="swiper swiper-hero absolute inset-0 z-0">
 		<div class="swiper-wrapper">
 			{slides.map((slide, index) => (
@@ -94,64 +88,65 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	</div>
 
 	<!-- Gradient Overlay -->
-	<div class="absolute inset-0 gradient-hero z-1"></div>
+	<div class="absolute inset-0 gradient-hero z-[1]"></div>
 
 	<!-- Content -->
-	<div class="relative z-10 container mx-auto px-6 text-center pt-20 md:pt-24">
+	<div class="relative z-10 container mx-auto px-6 text-center">
 		<div class="max-w-4xl mx-auto">
-			<!-- Slide subtitle - dinámico -->
+			<!-- Slide subtitle - dinámico (cambia con cada slide) -->
 			<p
 				id="hero-slide-subtitle"
-				class="hero-subtitle font-body text-terracotta text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
+				class="font-body text-cream/80 text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
 			>
 				{slides[0]?.subtitle || ""}
 			</p>
 
-			<!-- Slide title - dinámico -->
+			<!-- Slide title - dinámico (cambia con cada slide) -->
 			<h2
 				id="hero-slide-title"
-				class="font-heading text-3xl md:text-4xl lg:text-5xl text-cream font-medium leading-tight mb-6 transition-all duration-500"
+				class="font-heading text-2xl md:text-3xl lg:text-4xl text-cream/90 font-medium leading-tight mb-10 transition-all duration-500"
 			>
 				{slides[0]?.title || ""}
 			</h2>
 
-			<!-- Separador -->
-			<div class="w-16 h-0.5 bg-terracotta/60 mx-auto mb-6"></div>
-
 			<!-- Subtítulo fijo -->
 			<p
-				class="font-body text-cream/80 text-sm tracking-[0.2em] uppercase mb-4"
+				class="font-body text-cream/90 text-sm tracking-[0.3em] uppercase mb-6 animate-fade-in"
+				style="animation-delay: 0.2s;"
 			>
 				{subtitle}
 			</p>
 
-			<!-- Título principal fijo -->
+			<!-- Título principal -->
 			<h1
-				class="font-heading text-4xl md:text-5xl lg:text-6xl text-cream font-medium leading-tight mb-6"
+				class="font-heading text-5xl md:text-7xl lg:text-8xl text-cream font-medium leading-tight mb-6 animate-fade-in"
+				style="animation-delay: 0.4s;"
 			>
 				{title}
 			</h1>
 
 			<!-- Descripción -->
 			<p
-				class="font-body text-cream/85 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+				class="font-body text-cream/90 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in"
+				style="animation-delay: 0.6s;"
 			>
 				{description}
 			</p>
 
 			<!-- CTAs -->
 			<div
-				class="flex flex-col sm:flex-row gap-4 justify-center"
+				class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
+				style="animation-delay: 0.8s;"
 			>
 				<a
-					href="#experiences"
-					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-terracotta text-white hover:bg-terracotta/90 font-body shadow-lg"
+					href={ctaPrimaryHref}
+					class="btn-hero-primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 font-body shadow-lg"
 				>
 					{ctaPrimary}
 				</a>
 				<a
-					href="#contact"
-					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 border-2 border-cream/60 text-cream hover:bg-cream hover:text-forest font-body"
+					href={ctaSecondaryHref}
+					class="btn-hero-secondary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 border-2 font-body"
 				>
 					{ctaSecondary}
 				</a>
@@ -162,7 +157,7 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	<!-- Scroll Indicator -->
 	<a
 		href="#experiences"
-		class="absolute bottom-10 left-1/2 -translate-x-1/2 text-cream/70 hover:text-cream transition-colors animate-float z-10"
+		class="absolute bottom-10 left-1/2 -translate-x-1/2 text-cream/70 hover:text-cream transition-colors animate-float z-10 text-white!"
 		aria-label="Scroll hacia experiencias"
 	>
 		<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -180,19 +175,63 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	.hero-section {
 		min-height: 100vh;
 		min-height: 100dvh;
-	}
-
-	.swiper-hero {
-		width: 100%;
-		height: 100%;
-	}
-
-	.swiper-hero .swiper-slide {
 		height: 100vh;
 		height: 100dvh;
 	}
 
-	/* Override super-flow content para ocultar títulos del slider */
+	/* Botones CTA del Hero */
+	.btn-hero-primary {
+		background-color: hsl(var(--terracotta));
+		color: #ffffff;
+	}
+
+	.btn-hero-primary:hover {
+		background-color: hsl(var(--terracotta) / 0.9);
+	}
+
+	.btn-hero-secondary {
+		background-color: transparent;
+		border-color: hsl(var(--cream));
+		color: hsl(var(--cream));
+	}
+
+	.btn-hero-secondary:hover {
+		background-color: hsl(var(--cream) / 0.1);
+	}
+
+	/* Swiper fullscreen background */
+	.swiper-hero {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	.swiper-hero .swiper-wrapper {
+		height: 100%;
+	}
+
+	.swiper-hero .swiper-slide {
+		height: 100%;
+		width: 100%;
+	}
+
+	/* Imagen fullscreen */
+	.swiper-hero .super-flow-image {
+		width: 100%;
+		height: 100%;
+		position: relative;
+	}
+
+	.swiper-hero .super-flow-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+	}
+
+	/* Ocultar contenido del super-flow effect */
 	.swiper-hero .super-flow-content {
 		display: none !important;
 	}
@@ -210,11 +249,29 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	}
 
 	.swiper-hero :global(.swiper-pagination-bullet-active) {
-		background: #C4704F; /* terracotta */
+		background: hsl(var(--terracotta));
 		width: 30px;
 		border-radius: 5px;
 	}
 
+	/* Animación de fade in */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.animate-fade-in {
+		opacity: 0;
+		animation: fadeIn 0.8s ease-out forwards;
+	}
+
+	/* Animación flotante para scroll indicator */
 	@keyframes float {
 		0%, 100% {
 			transform: translateX(-50%) translateY(0);
@@ -227,22 +284,6 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	.animate-float {
 		animation: float 2s ease-in-out infinite;
 	}
-
-	/* Text shadow para mejor legibilidad del subtítulo */
-	.hero-subtitle {
-		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-	}
-
-	/* Animación de fade para cambio de texto */
-	.text-fade-out {
-		opacity: 0;
-		transform: translateY(-10px);
-	}
-
-	.text-fade-in {
-		opacity: 1;
-		transform: translateY(0);
-	}
 </style>
 
 <script>
@@ -250,7 +291,7 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	import { Autoplay, Pagination } from "swiper/modules";
 	import EffectSuperFlow from "../lib/effects/effect-super-flow.esm.js";
 
-	// Elementos del DOM
+	// Elementos del DOM para títulos dinámicos
 	const slideTitle = document.getElementById('hero-slide-title');
 	const slideSubtitle = document.getElementById('hero-slide-subtitle');
 
@@ -281,28 +322,16 @@ const getImageAlt = (slide: StrapiSlide): string => {
 		}, 300);
 	};
 
-	// Inicializar Swiper
+	// Inicializar Swiper con opciones extendidas para el efecto personalizado
 	const swiper = new Swiper(".swiper-hero", {
 		direction: "horizontal",
 		modules: [EffectSuperFlow, Autoplay, Pagination],
-		effect: "super-flow",
+		effect: "super-flow" as any,
 		slidesPerView: 1,
 		loop: true,
 		pagination: {
 			el: ".swiper-pagination",
 			clickable: true,
-		},
-		superFlowEffect: {
-			fragments: 3,
-			fragmentBlur: true,
-			fragmentBorderWidth: 2,
-			scaleDuration: 4000,
-			contentOffset: 5,
-			contentScale: 1.2,
-			mainImageScale: 1.1,
-			level1Scale: 1.15,
-			level2Scale: 1.2,
-			level3Scale: 1.25,
 		},
 		speed: 1000,
 		grabCursor: true,
@@ -310,12 +339,25 @@ const getImageAlt = (slide: StrapiSlide): string => {
 			delay: 5000,
 			disableOnInteraction: false,
 		},
-		on: {
-			slideChange: function() {
-				// Obtener índice real (considerando loop)
-				const realIndex = this.realIndex;
-				updateSlideText(realIndex);
+		// Opciones del efecto Super Flow (tipado personalizado)
+		...({
+			superFlowEffect: {
+				fragments: 3,
+				fragmentBlur: true,
+				fragmentBorderWidth: 2,
+				scaleDuration: 4000,
+				contentOffset: 5,
+				contentScale: 1.2,
+				mainImageScale: 1.1,
+				level1Scale: 1.15,
+				level2Scale: 1.2,
+				level3Scale: 1.25,
 			},
-		},
+		} as any),
+	});
+
+	// Escuchar cambio de slide
+	swiper.on('slideChange', () => {
+		updateSlideText(swiper.realIndex);
 	});
 </script>

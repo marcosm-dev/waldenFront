@@ -8,20 +8,18 @@ const { siteTitle = "Walden Adventures" } = Astro.props;
 const navLinks = [
 	{ href: "#experiences", label: "Experiencias" },
 	{ href: "#philosophy", label: "Filosofía" },
-	{ href: "#pricing", label: "Precios" },
-	{ href: "#testimonials", label: "Opiniones" },
 	{ href: "#contact", label: "Contacto" },
 ];
 ---
 
 <header
 	id="main-header"
-	class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent py-6"
+	class="header-transparent fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6"
 >
 	<div class="container mx-auto px-6 flex items-center justify-between">
 		<a href="#" class="flex items-center gap-3">
-			<!-- Logo - Icono naranja con borde naranja -->
-			<div class="header-logo w-10 h-10 rounded-full bg-transparent border-2 border-terracotta flex items-center justify-center transition-all duration-300">
+			<!-- Logo - Icono de montaña -->
+			<div class="header-logo w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all duration-300">
 				<svg
 					class="logo-icon"
 					width="20"
@@ -36,15 +34,8 @@ const navLinks = [
 					<path d="m8 3 4 8 5-5 5 15H2L8 3z"></path>
 				</svg>
 			</div>
-			<span
-				class="header-title font-heading text-2xl font-semibold transition-colors duration-300 text-cream drop-shadow-sm"
-			>
+			<span class="header-title font-heading text-2xl font-semibold transition-colors duration-300">
 				{siteTitle}
-			</span>
-			<span
-				class="header-subtitle text-sm font-body tracking-widest transition-colors duration-300 text-cream/80"
-			>
-				GC
 			</span>
 		</a>
 
@@ -53,14 +44,14 @@ const navLinks = [
 			{navLinks.map((link) => (
 				<a
 					href={link.href}
-					class="nav-link font-body text-sm tracking-wide transition-all duration-300 hover:opacity-70 text-cream drop-shadow-sm"
+					class="nav-link font-body text-sm tracking-wide transition-all duration-300 hover:opacity-70"
 				>
 					{link.label}
 				</a>
 			))}
 			<a
 				href="#contact"
-				class="btn-reservar inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 transition-all duration-300 bg-terracotta text-white hover:bg-terracotta/90 font-body shadow-md"
+				class="btn-reservar inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 transition-all duration-300 font-body"
 			>
 				Reservar
 			</a>
@@ -74,7 +65,7 @@ const navLinks = [
 		>
 			<svg
 				id="menu-icon"
-				class="menu-icon text-cream drop-shadow-sm transition-colors duration-300"
+				class="menu-icon transition-colors duration-300"
 				width="24"
 				height="24"
 				viewBox="0 0 24 24"
@@ -90,7 +81,7 @@ const navLinks = [
 			</svg>
 			<svg
 				id="close-icon"
-				class="menu-icon hidden text-cream drop-shadow-sm transition-colors duration-300"
+				class="menu-icon hidden transition-colors duration-300"
 				width="24"
 				height="24"
 				viewBox="0 0 24 24"
@@ -109,20 +100,23 @@ const navLinks = [
 	<!-- Mobile Menu -->
 	<div
 		id="mobile-menu"
-		class="md:hidden hidden absolute top-full left-0 right-0 bg-cream/98 backdrop-blur-md shadow-card"
+		class="md:hidden hidden absolute top-full left-0 right-0 shadow-card animate-fade-in"
+		style="background: hsl(var(--background) / 0.98); backdrop-filter: blur(12px);"
 	>
 		<nav class="container mx-auto px-6 py-6 flex flex-col gap-4">
 			{navLinks.map((link) => (
 				<a
 					href={link.href}
-					class="mobile-nav-link font-body text-forest py-2 border-b border-forest/10"
+					class="mobile-nav-link font-body py-2"
+					style="color: hsl(var(--foreground)); border-bottom: 1px solid hsl(var(--border));"
 				>
 					{link.label}
 				</a>
 			))}
 			<a
 				href="#contact"
-				class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium bg-terracotta text-white hover:bg-terracotta/90 h-10 px-4 py-2 mt-2 transition-colors font-body"
+				class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium h-10 px-4 py-2 mt-2 transition-all duration-300 font-body"
+				style="background-color: hsl(158 35% 25%); color: hsl(45 30% 97%);"
 			>
 				Reservar
 			</a>
@@ -131,19 +125,91 @@ const navLinks = [
 </header>
 
 <style>
-	/* Text shadow for better readability over images */
-	.drop-shadow-sm {
-		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	/* Estado inicial: transparente sobre hero (texto cream) */
+	.header-transparent {
+		background: transparent;
 	}
 
-	/* Logo icon color */
-	.logo-icon {
-		color: #C4704F; /* terracotta */
+	.header-transparent .header-title {
+		color: hsl(var(--cream));
 	}
 
-	/* Scrolled state logo */
+	.header-transparent .header-subtitle {
+		color: hsl(var(--cream) / 0.8);
+	}
+
+	.header-transparent .nav-link {
+		color: hsl(var(--cream));
+	}
+
+	.header-transparent .menu-icon {
+		color: hsl(var(--cream));
+	}
+
+	/* Botón heroOutline: borde cream, fondo transparente */
+	.header-transparent .btn-reservar {
+		border: 2px solid hsl(var(--cream));
+		color: hsl(var(--cream));
+		background: transparent;
+	}
+
+	.header-transparent .btn-reservar:hover {
+		background: hsl(var(--cream) / 0.1);
+	}
+
+	/* Estado scrolled: fondo sólido */
+	.header-scrolled {
+		background: hsl(var(--background) / 0.95);
+		backdrop-filter: blur(12px);
+		box-shadow: var(--shadow-soft);
+		padding-top: 1rem;
+		padding-bottom: 1rem;
+	}
+
+	.header-scrolled .header-title {
+		color: hsl(var(--forest));
+	}
+
+	.header-scrolled .header-subtitle {
+		color: hsl(var(--muted-foreground));
+	}
+
+	.header-scrolled .nav-link {
+		color: hsl(var(--foreground));
+	}
+
+	.header-scrolled .menu-icon {
+		color: hsl(var(--foreground));
+	}
+
+	/* Botón scrolled: fondo terracotta (naranja) con texto blanco */
+	.header-scrolled .btn-reservar {
+		border: none;
+		background: hsl(var(--terracotta));
+		color: #ffffff;
+	}
+
+	.header-scrolled .btn-reservar:hover {
+		background: hsl(var(--terracotta) / 0.9);
+	}
+
+	/* Logo icono */
+	.header-transparent .header-logo {
+		border-color: hsl(var(--terracotta));
+		background: transparent;
+	}
+
+	.header-transparent .logo-icon {
+		color: hsl(var(--terracotta));
+	}
+
+	.header-scrolled .header-logo {
+		border-color: hsl(var(--terracotta));
+		background: hsl(var(--cream));
+	}
+
 	.header-scrolled .logo-icon {
-		color: #C4704F;
+		color: hsl(var(--terracotta));
 	}
 </style>
 
@@ -153,12 +219,6 @@ const navLinks = [
 	const mobileMenu = document.getElementById('mobile-menu');
 	const menuIcon = document.getElementById('menu-icon');
 	const closeIcon = document.getElementById('close-icon');
-	const headerLogo = document.querySelector('.header-logo') as HTMLElement;
-	const headerTitle = document.querySelector('.header-title');
-	const headerSubtitle = document.querySelector('.header-subtitle');
-	const navLinks = document.querySelectorAll('.nav-link');
-	const menuIcons = document.querySelectorAll('.menu-icon');
-	const btnReservar = document.querySelector('.btn-reservar');
 	const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
 	let isMenuOpen = false;
@@ -168,58 +228,11 @@ const navLinks = [
 		const isScrolled = window.scrollY > 50;
 
 		if (isScrolled) {
-			header?.classList.remove('bg-transparent', 'py-6');
-			header?.classList.add('bg-cream/95', 'backdrop-blur-sm', 'shadow-soft', 'py-4', 'header-scrolled');
-
-			// Logo mantiene borde naranja pero fondo cream
-			headerLogo?.classList.remove('bg-transparent');
-			headerLogo?.classList.add('bg-cream');
-
-			headerTitle?.classList.remove('text-cream', 'drop-shadow-sm');
-			headerTitle?.classList.add('text-forest');
-
-			headerSubtitle?.classList.remove('text-cream/80');
-			headerSubtitle?.classList.add('text-forest/60');
-
-			navLinks.forEach(link => {
-				link.classList.remove('text-cream', 'drop-shadow-sm');
-				link.classList.add('text-forest');
-			});
-
-			menuIcons.forEach(icon => {
-				icon.classList.remove('text-cream', 'drop-shadow-sm');
-				icon.classList.add('text-forest');
-			});
-
-			// Botón reservar siempre naranja
-			btnReservar?.classList.remove('shadow-md');
-			btnReservar?.classList.add('shadow-sm');
+			header?.classList.remove('header-transparent', 'py-6');
+			header?.classList.add('header-scrolled', 'py-4');
 		} else {
-			header?.classList.add('bg-transparent', 'py-6');
-			header?.classList.remove('bg-cream/95', 'backdrop-blur-sm', 'shadow-soft', 'py-4', 'header-scrolled');
-
-			// Logo transparente sobre hero
-			headerLogo?.classList.add('bg-transparent');
-			headerLogo?.classList.remove('bg-cream');
-
-			headerTitle?.classList.add('text-cream', 'drop-shadow-sm');
-			headerTitle?.classList.remove('text-forest');
-
-			headerSubtitle?.classList.add('text-cream/80');
-			headerSubtitle?.classList.remove('text-forest/60');
-
-			navLinks.forEach(link => {
-				link.classList.add('text-cream', 'drop-shadow-sm');
-				link.classList.remove('text-forest');
-			});
-
-			menuIcons.forEach(icon => {
-				icon.classList.add('text-cream', 'drop-shadow-sm');
-				icon.classList.remove('text-forest');
-			});
-
-			btnReservar?.classList.add('shadow-md');
-			btnReservar?.classList.remove('shadow-sm');
+			header?.classList.add('header-transparent', 'py-6');
+			header?.classList.remove('header-scrolled', 'py-4');
 		}
 	};
 
