@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.12",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/node": "^9.5.1",
     "@astrojs/react": "^4.4.2",
@@ -31,6 +32,7 @@
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
-    "shadcn": "^3.6.3"
+    "shadcn": "^3.6.3",
+    "wrangler": "^4.60.0"
   }
 }

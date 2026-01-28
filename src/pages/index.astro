@@ -1,67 +1,124 @@
 ---
 export const prerender = true;
 
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import ExperiencesSection from '../components/ExperiencesSection.astro';
-import PhilosophySection from '../components/PhilosophySection.astro';
-import PricingSection from '../components/PricingSection.astro';
-import TestimonialsSection from '../components/TestimonialsSection.astro';
-import ContactSection from '../components/ContactSection.astro';
-import { getPageData } from '../lib/mock-data';
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import ExperiencesSection from "../components/ExperiencesSection.astro";
+import PhilosophySection from "../components/PhilosophySection.astro";
+import PricingSection from "../components/PricingSection.astro";
+import TestimonialsSection from "../components/TestimonialsSection.astro";
+import ContactSection from "../components/ContactSection.astro";
 
-// Obtener datos mockeados (en el futuro vendrán de WordPress)
-const data = await getPageData();
+// WordPress Service
+import { getPage } from "../lib/wp-service";
+
+// Mock data como fallback
+import { getPageData } from "../lib/mock-data";
+
+// ============================================
+// FETCH DATOS DE WORDPRESS
+// ============================================
+
+// Obtener página "home" de WordPress
+const wpHome = await getPage("home");
+
+// Debug: ver qué llega de WordPress (descomenta para ver en consola del build)
+// console.log('WordPress Home Data:', JSON.stringify(wpHome, null, 2));
+
+// Si WordPress funciona, wpHome tendrá:
+// - wpHome.title -> título de la página
+// - wpHome.content -> HTML del contenido (incluye Elementor)
+// - wpHome.acf -> campos ACF si los tienes
+// - wpHome.raw -> datos crudos completos de la API
+
+// ============================================
+// DATOS MOCKEADOS (fallback)
+// ============================================
+const mockData = await getPageData();
+
+// ============================================
+// USAR DATOS - Modifica esto según tu estructura
+// ============================================
+
+// Por ahora usa mock data, tú mapeas los datos de wpHome como necesites
+const data = mockData;
+
+// Ejemplo de cómo podrías usar datos de WordPress:
+// const data = {
+//   ...mockData,
+//   hero: {
+//     ...mockData.hero,
+//     title: wpHome?.acf?.hero_title || mockData.hero.title,
+//     slides: wpHome?.acf?.slider || mockData.hero.slides,
+//   }
+// };
+
+console.log(mockData);
 ---
 
 <!doctype html>
 <html lang="es">
-	<head>
-		<BaseHead title={data.site.title} description={data.site.description} />
-	</head>
-	<body class="min-h-screen">
-		<Header siteTitle={data.site.title} />
-		<main>
-			<Hero
-				title={data.hero.title}
-				subtitle={data.hero.subtitle}
-				description={data.hero.description}
-				ctaPrimary={data.hero.ctaPrimary}
-				ctaSecondary={data.hero.ctaSecondary}
-				slides={data.hero.slides}
-			/>
-			<ExperiencesSection />
-			<PhilosophySection
-				subtitle={data.philosophy.subtitle}
-				title={data.philosophy.title}
-				description={data.philosophy.description}
-				items={data.philosophy.items}
-			/>
-			<PricingSection />
-			<TestimonialsSection
-				subtitle={data.testimonials.subtitle}
-				title={data.testimonials.title}
-				description={data.testimonials.description}
-				testimonials={data.testimonials.testimonials}
-			/>
-			<ContactSection
-				title={data.contact.title}
-				subtitle={data.contact.subtitle}
-				description={data.contact.description}
-				email={data.contact.email}
-				instagram={data.contact.instagram}
-				location={data.contact.location}
-			/>
-		</main>
-		<Footer
-			siteTitle={data.site.title}
-			description={data.footer.description}
-			email={data.footer.email}
-			instagram={data.footer.instagram}
-			instagramUrl={data.footer.instagramUrl}
-			copyright={data.footer.copyright}
-		/>
-	</body>
+  <head>
+    <BaseHead title={data.site.title} description={data.site.description} />
+  </head>
+  <body class="min-h-screen">
+    <Header siteTitle={data.site.title} />
+    <main>
+      <!--
+				WordPress Data disponible:
+				- wpHome?.content (HTML de Elementor)
+				- wpHome?.acf (campos ACF)
+				- wpHome?.raw (datos crudos)
+			-->
+      <Hero
+        title={data.hero.title}
+        subtitle={data.hero.subtitle}
+        description={data.hero.description}
+        ctaPrimary={data.hero.ctaPrimary}
+        ctaSecondary={data.hero.ctaSecondary}
+        slides={data.hero.slides}
+      />
+      <ExperiencesSection />
+      <PhilosophySection
+        subtitle={data.philosophy.subtitle}
+        title={data.philosophy.title}
+        description={data.philosophy.description}
+        items={data.philosophy.items}
+      />
+      <PricingSection />
+      <TestimonialsSection
+        subtitle={data.testimonials.subtitle}
+        title={data.testimonials.title}
+        description={data.testimonials.description}
+        testimonials={data.testimonials.testimonials}
+      />
+      <ContactSection
+        title={data.contact.title}
+        subtitle={data.contact.subtitle}
+        description={data.contact.description}
+        email={data.contact.email}
+        instagram={data.contact.instagram}
+        location={data.contact.location}
+      />
+    </main>
+    <Footer
+      siteTitle={data.site.title}
+      description={data.footer.description}
+      email={data.footer.email}
+      instagram={data.footer.instagram}
+      instagramUrl={data.footer.instagramUrl}
+      copyright={data.footer.copyright}
+    />
+
+    <!-- Debug: mostrar datos de WordPress en desarrollo -->
+    {
+      import.meta.env.DEV && wpHome && (
+        <script is:inline define:vars={{ wpHomeData: wpHome }}>
+          console.log('📦 WordPress Home Data:', wpHomeData);
+        </script>
+      )
+    }
+  </body>
 </html>

@@ -106,15 +106,15 @@ const getImage = (path: string) => imageMap[path] || img01;
 	</div>
 
 	<!-- Gradient Overlay -->
-	<div class="absolute inset-0 gradient-hero z-[1]"></div>
+	<div class="absolute inset-0 gradient-hero z-1"></div>
 
 	<!-- Content -->
-	<div class="relative z-10 container mx-auto px-6 text-center">
+	<div class="relative z-10 container mx-auto px-6 text-center pt-20 md:pt-24">
 		<div class="max-w-4xl mx-auto">
 			<!-- Slide subtitle - dinámico -->
 			<p
 				id="hero-slide-subtitle"
-				class="font-body text-terracotta text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
+				class="hero-subtitle font-body text-terracotta text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
 			>
 				{slides[0]?.subtitle || ""}
 			</p>
@@ -157,7 +157,7 @@ const getImage = (path: string) => imageMap[path] || img01;
 			>
 				<a
 					href="#experiences"
-					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-terracotta text-cream hover:bg-terracotta/90 font-body shadow-lg"
+					class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-terracotta text-white hover:bg-terracotta/90 font-body shadow-lg"
 				>
 					{ctaPrimary}
 				</a>
@@ -238,6 +238,11 @@ const getImage = (path: string) => imageMap[path] || img01;
 
 	.animate-float {
 		animation: float 2s ease-in-out infinite;
+	}
+
+	/* Text shadow para mejor legibilidad del subtítulo */
+	.hero-subtitle {
+		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 	}
 
 	/* Animación de fade para cambio de texto */

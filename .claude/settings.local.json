@@ -12,7 +12,9 @@
       "Bash(npm run build:*)",
       "mcp__shadcn__get_audit_checklist",
       "Bash(npm run dev)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "mcp__shadcn__get_item_examples_from_registries",
+      "mcp__shadcn__view_items_in_registries"
     ]
   },
   "enableAllProjectMcpServers": true,

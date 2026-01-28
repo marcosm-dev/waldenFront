@@ -21,9 +21,9 @@ interface Props {
 }
 
 const {
-	subtitle = "Precios por persona",
+	subtitle = "Cómo participar",
 	title = "Elige tu experiencia",
-	description = "Todas las experiencias incluyen la comida, porque creemos que compartir mesa forma parte esencial de la experiencia.",
+	description = "Todas las experiencias incluyen comida porque compartir mesa forma parte esencial de la aventura.",
 	experiences = [
 		{ id: 1, name: "Caminata + comida", price: "30", description: "Rutas por volcanes y pinares con paella o asadero incluido" },
 		{ id: 2, name: "Kayak + comida", price: "47,50", description: "Travesía costera en kayak con comida al aire libre" },
@@ -32,9 +32,9 @@ const {
 		{ id: 5, name: "Caminata + paddle surf + comida", price: "55", description: "Aventura doble con senderismo y paddle surf" },
 	],
 	details = [
-		{ icon: "calendar", title: "Sábados y domingos", description: "Actividades los fines de semana" },
-		{ icon: "users", title: "Mínimo 4, máximo 8", description: "Grupos reducidos garantizados" },
-		{ icon: "credit-card", title: "Reserva con 10 €", description: "Resto el día de la actividad" },
+		{ icon: "calendar", title: "Sábados y domingos", description: "Actividades en fin de semana" },
+		{ icon: "users", title: "4 a 8 personas", description: "Grupos íntimos garantizados" },
+		{ icon: "credit-card", title: "Reserva con 10 €", description: "El resto el día de la actividad" },
 	],
 } = Astro.props;
 ---
@@ -43,7 +43,7 @@ const {
 	<div class="container mx-auto px-6">
 		<div class="max-w-4xl mx-auto">
 			<!-- Header -->
-			<div class="text-center mb-12">
+			<div class="text-center mb-16">
 				<p class="font-body text-ocean text-sm tracking-[0.2em] uppercase mb-4">
 					{subtitle}
 				</p>
@@ -55,59 +55,48 @@ const {
 				</p>
 			</div>
 
-			<!-- Pricing List - Expandable Items -->
-			<div class="space-y-3 mb-12">
+			<!-- Accordion Pricing -->
+			<div class="pricing-accordion space-y-4 mb-16">
 				{experiences.map((exp, index) => (
 					<div
-						class="pricing-item group border border-border rounded-xl bg-card overflow-hidden transition-all duration-300 hover:border-ocean/30"
+						class="pricing-item group rounded-2xl border border-border bg-card hover:shadow-card transition-all duration-300"
 						data-index={index}
 					>
-						<!-- Header Row - Always Visible -->
 						<button
-							class="pricing-toggle w-full flex items-center justify-between p-5 text-left cursor-pointer"
+							class="pricing-trigger w-full flex items-center justify-between p-6 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ocean/50 focus-visible:ring-offset-2 rounded-2xl"
 							aria-expanded="false"
 						>
-							<div class="flex items-center gap-4">
-								<div class="w-10 h-10 rounded-full bg-ocean/10 flex items-center justify-center shrink-0">
-									<span class="font-heading text-lg text-ocean">{index + 1}</span>
+							<h3 class="font-heading text-xl text-foreground pr-4">
+								{exp.name}
+							</h3>
+							<div class="flex items-center gap-4 shrink-0">
+								<div class="text-right">
+									<span class="font-heading text-2xl text-ocean">
+										{exp.price}€
+									</span>
+									<p class="font-body text-xs text-muted-foreground">
+										por persona
+									</p>
 								</div>
-								<h3 class="font-heading text-lg md:text-xl text-foreground">
-									{exp.name}
-								</h3>
-							</div>
-							<div class="flex items-center gap-4">
-								<span class="font-heading text-xl md:text-2xl text-ocean">
-									{exp.price}€
-								</span>
-								<div class="pricing-chevron w-8 h-8 rounded-full bg-secondary flex items-center justify-center transition-transform duration-300">
+								<span class="pricing-chevron w-8 h-8 rounded-full bg-secondary flex items-center justify-center transition-transform duration-300">
 									<svg class="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 										<path d="m6 9 6 6 6-6"/>
 									</svg>
-								</div>
+								</span>
 							</div>
 						</button>
 
-						<!-- Expandable Content -->
-						<div class="pricing-content hidden">
-							<div class="px-5 pb-5 pt-0">
-								<div class="pl-14 border-l-2 border-ocean/20 ml-5">
+						<div class="pricing-panel">
+							<div class="px-6 pb-6">
+								<div class="pt-4 border-t border-border/50">
 									<p class="font-body text-muted-foreground leading-relaxed mb-4">
 										{exp.description}
 									</p>
-									<div class="flex flex-wrap gap-3">
-										<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-forest/10 text-forest text-sm font-body">
-											<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-												<path d="M20 6 9 17l-5-5"></path>
-											</svg>
-											Comida incluida
-										</span>
-										<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-ocean/10 text-ocean text-sm font-body">
-											<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-												<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-												<circle cx="9" cy="7" r="4"></circle>
-											</svg>
-											Grupos reducidos
-										</span>
+									<div class="flex items-center gap-2 text-sm text-forest">
+										<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+											<path d="M20 6 9 17l-5-5"/>
+										</svg>
+										<span class="font-body">Comida incluida</span>
 									</div>
 								</div>
 							</div>
@@ -116,39 +105,39 @@ const {
 				))}
 			</div>
 
-			<!-- Organization Details - Compact -->
-			<div class="bg-secondary/30 rounded-2xl p-6 md:p-8">
-				<div class="grid grid-cols-3 gap-4 md:gap-8 mb-8">
+			<!-- Organization Details -->
+			<div class="bg-secondary/30 rounded-3xl p-8 md:p-12">
+				<div class="grid md:grid-cols-3 gap-8 mb-10">
 					{details.map((detail) => (
 						<div class="text-center">
-							<div class="w-12 h-12 rounded-xl bg-ocean/10 flex items-center justify-center mx-auto mb-3">
+							<div class="w-14 h-14 rounded-2xl bg-ocean/10 flex items-center justify-center mx-auto mb-4">
 								{detail.icon === "calendar" && (
-									<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M8 2v4"></path>
-										<path d="M16 2v4"></path>
-										<rect width="18" height="18" x="3" y="4" rx="2"></rect>
-										<path d="M3 10h18"></path>
+									<svg class="text-ocean" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M8 2v4"/>
+										<path d="M16 2v4"/>
+										<rect width="18" height="18" x="3" y="4" rx="2"/>
+										<path d="M3 10h18"/>
 									</svg>
 								)}
 								{detail.icon === "users" && (
-									<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-										<circle cx="9" cy="7" r="4"></circle>
-										<path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-										<path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+									<svg class="text-ocean" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+										<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+										<circle cx="9" cy="7" r="4"/>
+										<path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+										<path d="M16 3.13a4 4 0 0 1 0 7.75"/>
 									</svg>
 								)}
 								{detail.icon === "credit-card" && (
-									<svg class="text-ocean" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-										<rect width="20" height="14" x="2" y="5" rx="2"></rect>
-										<line x1="2" x2="22" y1="10" y2="10"></line>
+									<svg class="text-ocean" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+										<rect width="20" height="14" x="2" y="5" rx="2"/>
+										<line x1="2" x2="22" y1="10" y2="10"/>
 									</svg>
 								)}
 							</div>
-							<h4 class="font-heading text-sm md:text-base text-foreground mb-0.5">
+							<h4 class="font-heading text-lg text-foreground mb-1">
 								{detail.title}
 							</h4>
-							<p class="font-body text-xs md:text-sm text-muted-foreground hidden md:block">
+							<p class="font-body text-sm text-muted-foreground">
 								{detail.description}
 							</p>
 						</div>
@@ -156,13 +145,13 @@ const {
 				</div>
 
 				<div class="text-center">
+					<p class="font-body text-muted-foreground mb-6">
+						¿Tienes alguna pregunta o quieres reservar tu plaza?
+					</p>
 					<a
 						href="#contact"
-						class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-11 px-8 py-2 transition-all duration-300 bg-terracotta text-cream hover:bg-terracotta/90 font-body shadow-md hover:shadow-lg"
+						class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-12 px-8 py-3 transition-all duration-300 bg-ocean text-white hover:bg-ocean/90 font-body shadow-md hover:shadow-lg"
 					>
-						<svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-						</svg>
 						Reservar experiencia
 					</a>
 				</div>
@@ -172,55 +161,63 @@ const {
 </section>
 
 <style>
+	/* Accordion panel animation */
+	.pricing-panel {
+		display: grid;
+		grid-template-rows: 0fr;
+		transition: grid-template-rows 0.3s ease-out;
+	}
+
+	.pricing-panel > div {
+		overflow: hidden;
+	}
+
+	.pricing-item.expanded .pricing-panel {
+		grid-template-rows: 1fr;
+	}
+
+	/* Expanded state */
+	.pricing-item.expanded {
+		border-color: hsl(var(--ocean) / 0.3);
+		box-shadow: 0 8px 30px -8px hsl(var(--forest) / 0.15);
+	}
+
 	.pricing-item.expanded .pricing-chevron {
 		transform: rotate(180deg);
+		background: hsl(var(--ocean) / 0.1);
 	}
 
-	.pricing-item.expanded {
-		border-color: var(--color-ocean);
-		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-	}
-
-	.pricing-content {
-		max-height: 0;
-		overflow: hidden;
-		transition: max-height 0.3s ease-out;
-	}
-
-	.pricing-item.expanded .pricing-content {
-		max-height: 200px;
+	.pricing-item.expanded .pricing-chevron svg {
+		color: hsl(var(--ocean));
 	}
 </style>
 
 <script>
-	const pricingItems = document.querySelectorAll('.pricing-item');
+	const accordion = document.querySelector('.pricing-accordion');
+	const items = accordion?.querySelectorAll('.pricing-item');
 
-	pricingItems.forEach(item => {
-		const toggle = item.querySelector('.pricing-toggle');
-		const content = item.querySelector('.pricing-content');
+	items?.forEach(item => {
+		const trigger = item.querySelector('.pricing-trigger');
+		const panel = item.querySelector('.pricing-panel');
 
-		toggle?.addEventListener('click', () => {
+		trigger?.addEventListener('click', () => {
 			const isExpanded = item.classList.contains('expanded');
 
 			// Close all other items
-			pricingItems.forEach(otherItem => {
-				if (otherItem !== item) {
+			items.forEach(otherItem => {
+				if (otherItem !== item && otherItem.classList.contains('expanded')) {
 					otherItem.classList.remove('expanded');
-					const otherContent = otherItem.querySelector('.pricing-content');
-					otherContent?.classList.add('hidden');
-					otherItem.querySelector('.pricing-toggle')?.setAttribute('aria-expanded', 'false');
+					otherItem.querySelector('.pricing-trigger')?.setAttribute('aria-expanded', 'false');
 				}
 			});
 
 			// Toggle current item
 			if (isExpanded) {
 				item.classList.remove('expanded');
-				content?.classList.add('hidden');
-				toggle.setAttribute('aria-expanded', 'false');
+				trigger.setAttribute('aria-expanded', 'false');
 			} else {
 				item.classList.add('expanded');
-				content?.classList.remove('hidden');
-				toggle.setAttribute('aria-expanded', 'true');
+				trigger.setAttribute('aria-expanded', 'true');
 			}
 		});
 	});

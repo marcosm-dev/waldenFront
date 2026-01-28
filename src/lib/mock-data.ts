@@ -1,6 +1,56 @@
 /**
  * Datos mockeados que simulan la estructura de WordPress headless
  * Estos datos serán reemplazados por llamadas reales a la API de WordPress
+ *
+ * ============================================
+ * GUÍA DE INTEGRACIÓN CON WORDPRESS HEADLESS
+ * ============================================
+ *
+ * Para conectar Astro con WordPress como headless CMS:
+ *
+ * 1. CONFIGURAR WORDPRESS:
+ *    - Instalar y activar plugins:
+ *      • ACF (Advanced Custom Fields) - para campos personalizados
+ *      • ACF to REST API - expone campos ACF en la REST API
+ *      • WP REST API Controller - controla qué exponer
+ *
+ * 2. CREAR CUSTOM POST TYPES (CPTs):
+ *    Usar un plugin como CPT UI o código en functions.php:
+ *
+ *    - hero_slide: Slides del hero
+ *      • Campos: title, subtitle (ACF text), featured_media, menu_order
+ *
+ *    - testimonial: Testimonios
+ *      • Campos: title (nombre), content (texto), experience (ACF text),
+ *        location (ACF text), rating (ACF number)
+ *
+ *    - experience: Experiencias
+ *      • Campos: title, content, featured_media, icon (ACF select)
+ *
+ *    - pricing: Precios
+ *      • Campos: title (nombre), price (ACF text), content (descripción)
+ *
+ * 3. CREAR ACF OPTIONS PAGE para configuraciones globales:
+ *    • hero_title, hero_subtitle, hero_description
+ *    • contact_email, contact_phone, contact_whatsapp, etc.
+ *
+ * 4. HABILITAR REST API para los CPTs:
+ *    Al registrar el CPT, asegurarse de: 'show_in_rest' => true
+ *
+ * 5. CONFIGURAR CORS (si Astro está en dominio diferente):
+ *    Añadir headers en WordPress:
+ *    add_action('rest_api_init', function() {
+ *      header('Access-Control-Allow-Origin: https://tu-sitio-astro.com');
+ *    });
+ *
+ * 6. USAR LOS SERVICIOS DE wordpress.ts:
+ *    import { getHeroSlides, getTestimonials } from '../lib/wordpress';
+ *    const slides = await getHeroSlides();
+ *
+ * 7. INVALIDACIÓN DE CACHÉ:
+ *    - En build time: Astro regenera todo
+ *    - Para SSR: El caché en memoria se invalida cada hora
+ *    - Opcional: Webhook de WordPress -> Astro para rebuild on publish
  */
 
 // ============================================
@@ -333,14 +383,44 @@ export interface AllPageData {
 
 /**
  * Obtiene todos los datos de la página
- * En el futuro, esta función llamará a la API de WordPress
+ *
+ * Actualmente usa datos mockeados. Para conectar con WordPress:
+ * 1. Configura SITE_URL en src/consts.ts apuntando a tu WordPress
+ * 2. Crea los CPTs necesarios en WordPress (ver guía arriba)
+ * 3. Descomenta las líneas de importación y llamadas a WordPress
+ *
+ * @example
+ * // Cuando WordPress esté configurado:
+ * import {
+ *   getHeroSlides,
+ *   getTestimonials,
+ *   getExperiences,
+ *   getPricing,
+ *   getSiteSettings,
+ *   stripHtml,
+ *   getFeaturedImage
+ * } from './wordpress';
+ *
+ * export async function getPageData(): Promise<AllPageData> {
+ *   const [wpSlides, wpTestimonials, wpSettings] = await Promise.all([
+ *     getHeroSlides(),
+ *     getTestimonials(),
+ *     getSiteSettings()
+ *   ]);
+ *
+ *   // Mapear datos de WordPress a la estructura de la app
+ *   const slides = wpSlides.map(s => ({
+ *     title: stripHtml(s.title.rendered),
+ *     subtitle: s.meta.slide_subtitle,
+ *     image: getFeaturedImage(s)?.url || '/images/01.jpg',
+ *     alt: stripHtml(s.title.rendered)
+ *   }));
+ *
+ *   // ... resto del mapeo
+ * }
  */
 export async function getPageData(): Promise<AllPageData> {
-	// TODO: Reemplazar con llamadas reales a WordPress
-	// const heroPage = await getPageBySlug('hero');
-	// const experiencesPage = await getPageBySlug('experiences');
-	// etc.
-
+	// Usar datos mockeados mientras WordPress no está configurado
 	return {
 		site: siteSettings,
 		nav: navLinks,

@@ -8,6 +8,8 @@ import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import cloudflare from '@astrojs/cloudflare';
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://walden-adventures.com',
@@ -15,9 +17,7 @@ export default defineConfig({
   // Modo server con prerender por defecto para páginas estáticas
   // Los endpoints API se renderizan en servidor
   output: 'server',
-  adapter: node({
-    mode: 'standalone'
-  }),
+  adapter: cloudflare(),
 
   integrations: [mdx(), sitemap(), react()],
 
