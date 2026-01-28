@@ -3,19 +3,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "../lib/effects/effect-super-flow.css";
 
-import { Image } from "astro:assets";
-import img01 from "../assets/images/01.jpg";
-import img02 from "../assets/images/02.jpg";
-import img03 from "../assets/images/03.jpg";
-import img04 from "../assets/images/04.jpg";
-import img05 from "../assets/images/05.jpg";
-
-interface SlideData {
-	title: string;
-	subtitle?: string;
-	image: string;
-	alt: string;
-}
+import type { StrapiSlide } from "../lib/data";
 
 interface Props {
 	title?: string;
@@ -23,7 +11,7 @@ interface Props {
 	description?: string;
 	ctaPrimary?: string;
 	ctaSecondary?: string;
-	slides?: SlideData[];
+	slides?: StrapiSlide[];
 }
 
 const {
@@ -35,53 +23,51 @@ const {
 	slides: propsSlides,
 } = Astro.props;
 
-// Mapeo de imágenes locales
-const imageMap: Record<string, ImageMetadata> = {
-	"/images/01.jpg": img01,
-	"/images/02.jpg": img02,
-	"/images/03.jpg": img03,
-	"/images/04.jpg": img04,
-	"/images/05.jpg": img05,
-};
-
-// Slides con títulos sincronizados (configurables desde WordPress)
-const defaultSlides: SlideData[] = [
-	{
-		title: "Kayak en la costa",
-		subtitle: "Explora el mar",
-		image: "/images/01.jpg",
-		alt: "Kayak en la costa de Gran Canaria"
-	},
-	{
-		title: "Caminatas por los pinares",
-		subtitle: "Conecta con la naturaleza",
-		image: "/images/02.jpg",
-		alt: "Caminata por los pinares"
-	},
-	{
-		title: "Paddle surf al atardecer",
-		subtitle: "Equilibrio y paz",
-		image: "/images/03.jpg",
-		alt: "Paddle surf al atardecer"
-	},
-	{
-		title: "Comida al aire libre",
-		subtitle: "Sabores auténticos",
-		image: "/images/04.jpg",
-		alt: "Comida al aire libre"
-	},
-	{
-		title: "Aventura en grupo",
-		subtitle: "Momentos compartidos",
-		image: "/images/05.jpg",
-		alt: "Aventura en la naturaleza"
-	},
+// Slides por defecto
+const defaultSlides: StrapiSlide[] = [
+	{ id: "1", title: "Kayak en la costa", subtitle: "Explora el mar", description: null, image: { alternativeText: "Kayak en la costa", name: "kayak", url: "/images/01.jpg", formats: null } },
+	{ id: "2", title: "Caminatas por los pinares", subtitle: "Conecta con la naturaleza", description: null, image: { alternativeText: "Caminata por los pinares", name: "caminata", url: "/images/02.jpg", formats: null } },
+	{ id: "3", title: "Paddle surf al atardecer", subtitle: "Equilibrio y paz", description: null, image: { alternativeText: "Paddle surf", name: "paddle", url: "/images/03.jpg", formats: null } },
+	{ id: "4", title: "Comida al aire libre", subtitle: "Sabores auténticos", description: null, image: { alternativeText: "Comida al aire libre", name: "comida", url: "/images/04.jpg", formats: null } },
+	{ id: "5", title: "Aventura en grupo", subtitle: "Momentos compartidos", description: null, image: { alternativeText: "Aventura en grupo", name: "aventura", url: "/images/05.jpg", formats: null } },
 ];
 
 const slides = propsSlides || defaultSlides;
 
-// Función para obtener la imagen
-const getImage = (path: string) => imageMap[path] || img01;
+// Obtener URL principal de imagen (la original es la de mayor calidad)
+const getImageUrl = (slide: StrapiSlide): string => {
+	if (!slide.image) return "/images/01.jpg";
+	// La URL principal es la imagen original (mayor resolución)
+	return slide.image.url;
+};
+
+// Generar srcset para imágenes responsive
+const getImageSrcset = (slide: StrapiSlide): string | undefined => {
+	if (!slide.image?.formats) return undefined;
+
+	const formats = slide.image.formats;
+	const srcsetParts: string[] = [];
+
+	// Añadir cada formato disponible con su ancho
+	// Strapi genera: thumbnail ~235w, small ~500w, medium ~750w, large ~1000w
+	if (formats.small?.url) srcsetParts.push(`${formats.small.url} 500w`);
+	if (formats.medium?.url) srcsetParts.push(`${formats.medium.url} 750w`);
+	if (formats.large?.url) srcsetParts.push(`${formats.large.url} 1000w`);
+	// La imagen original para pantallas grandes (asumimos ~1920w o más)
+	if (slide.image.url) srcsetParts.push(`${slide.image.url} 1920w`);
+
+	return srcsetParts.length > 0 ? srcsetParts.join(', ') : undefined;
+};
+
+// Sizes para el hero fullscreen
+// - Móvil: 100vw (imagen ocupa todo el ancho)
+// - El navegador elegirá el formato más apropiado según el viewport
+const imageSizes = "100vw";
+
+// Obtener alt de imagen
+const getImageAlt = (slide: StrapiSlide): string => {
+	return slide.image?.alternativeText || slide.title;
+};
 ---
 
 <section class="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -91,12 +77,14 @@ const getImage = (path: string) => imageMap[path] || img01;
 			{slides.map((slide, index) => (
 				<div class="swiper-slide" data-slide-index={index}>
 					<div class="super-flow-image">
-						<Image
-							src={getImage(slide.image)}
-							alt={slide.alt}
+						<img
+							src={getImageUrl(slide)}
+							srcset={getImageSrcset(slide)}
+							sizes={imageSizes}
+							alt={getImageAlt(slide)}
 							class="w-full h-full object-cover"
-							widths={[640, 1024, 1920]}
-							sizes="100vw"
+							loading={index === 0 ? "eager" : "lazy"}
+							fetchpriority={index === 0 ? "high" : "auto"}
 						/>
 					</div>
 				</div>

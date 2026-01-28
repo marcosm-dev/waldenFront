@@ -11,51 +11,14 @@ import PricingSection from "../components/PricingSection.astro";
 import TestimonialsSection from "../components/TestimonialsSection.astro";
 import ContactSection from "../components/ContactSection.astro";
 
-// WordPress Service
-import { getPage } from "../lib/wp-service";
+// Strapi GraphQL Service
+import { getPageData } from "../lib/data";
 
-// Mock data como fallback
-import { getPageData } from "../lib/mock-data";
+// Obtener datos de Strapi (con fallback a mock data)
+const data = await getPageData();
 
-// ============================================
-// FETCH DATOS DE WORDPRESS
-// ============================================
+const [hero] = data.hero;
 
-// Obtener página "home" de WordPress
-const wpHome = await getPage("home");
-
-// Debug: ver qué llega de WordPress (descomenta para ver en consola del build)
-// console.log('WordPress Home Data:', JSON.stringify(wpHome, null, 2));
-
-// Si WordPress funciona, wpHome tendrá:
-// - wpHome.title -> título de la página
-// - wpHome.content -> HTML del contenido (incluye Elementor)
-// - wpHome.acf -> campos ACF si los tienes
-// - wpHome.raw -> datos crudos completos de la API
-
-// ============================================
-// DATOS MOCKEADOS (fallback)
-// ============================================
-const mockData = await getPageData();
-
-// ============================================
-// USAR DATOS - Modifica esto según tu estructura
-// ============================================
-
-// Por ahora usa mock data, tú mapeas los datos de wpHome como necesites
-const data = mockData;
-
-// Ejemplo de cómo podrías usar datos de WordPress:
-// const data = {
-//   ...mockData,
-//   hero: {
-//     ...mockData.hero,
-//     title: wpHome?.acf?.hero_title || mockData.hero.title,
-//     slides: wpHome?.acf?.slider || mockData.hero.slides,
-//   }
-// };
-
-console.log(mockData);
 ---
 
 <!doctype html>
@@ -66,19 +29,13 @@ console.log(mockData);
   <body class="min-h-screen">
     <Header siteTitle={data.site.title} />
     <main>
-      <!--
-				WordPress Data disponible:
-				- wpHome?.content (HTML de Elementor)
-				- wpHome?.acf (campos ACF)
-				- wpHome?.raw (datos crudos)
-			-->
       <Hero
-        title={data.hero.title}
-        subtitle={data.hero.subtitle}
-        description={data.hero.description}
-        ctaPrimary={data.hero.ctaPrimary}
-        ctaSecondary={data.hero.ctaSecondary}
-        slides={data.hero.slides}
+        title={hero.title}
+        subtitle={hero.subtitle}
+        description={hero.description}
+        ctaPrimary={hero.ctaPrimary}
+        ctaSecondary={hero.ctaSecondary}
+        slides={hero.slides}
       />
       <ExperiencesSection />
       <PhilosophySection
@@ -112,13 +69,5 @@ console.log(mockData);
       copyright={data.footer.copyright}
     />
 
-    <!-- Debug: mostrar datos de WordPress en desarrollo -->
-    {
-      import.meta.env.DEV && wpHome && (
-        <script is:inline define:vars={{ wpHomeData: wpHome }}>
-          console.log('📦 WordPress Home Data:', wpHomeData);
-        </script>
-      )
-    }
   </body>
 </html>

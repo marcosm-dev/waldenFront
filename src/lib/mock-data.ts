@@ -76,6 +76,8 @@ export interface HeroData {
 	description: string;
 	ctaPrimary: string;
 	ctaSecondary: string;
+	ctaPrimaryHref: string;
+	ctaSecondaryHref: string;
 	slides: HeroSlide[];
 }
 
@@ -187,6 +189,8 @@ export const heroData: HeroData = {
 	description: "Creamos experiencias al aire libre pensadas para quienes quieren desconectar del ritmo diario, disfrutar de la naturaleza y compartir buenos momentos en un entorno cuidado y tranquilo.",
 	ctaPrimary: "Descubre nuestras experiencias",
 	ctaSecondary: "Contactar",
+	ctaPrimaryHref: "#experiences",
+	ctaSecondaryHref: "#contact",
 	slides: [
 		{ title: "Kayak en la costa", subtitle: "Explora el mar", image: "/images/01.jpg", alt: "Kayak en la costa de Gran Canaria" },
 		{ title: "Caminatas por los pinares", subtitle: "Conecta con la naturaleza", image: "/images/02.jpg", alt: "Caminata por los pinares" },
