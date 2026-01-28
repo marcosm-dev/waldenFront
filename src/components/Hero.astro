@@ -6,43 +6,26 @@ import "../lib/effects/effect-super-flow.css";
 import type { StrapiSlide } from "../lib/data";
 
 interface Props {
-	title?: string | null;
-	subtitle?: string | null;
-	description?: string | null;
-	ctaPrimary?: string | null;
-	ctaSecondary?: string | null;
-	ctaPrimaryHref?: string | null;
-	ctaSecondaryHref?: string | null;
-	slides?: StrapiSlide[];
+	title: string;
+	subtitle: string;
+	description: string;
+	ctaPrimary: string;
+	ctaSecondary: string;
+	ctaPrimaryHref: string;
+	ctaSecondaryHref: string;
+	slides: StrapiSlide[];
 }
 
-// Valores por defecto
-const defaultTitle = "Experiencias al aire libre para disfrutar sin prisas";
-const defaultSubtitle = "Gran Canaria, España";
-const defaultDescription = "Creamos experiencias al aire libre diseñadas para quienes desean desconectar de la rutina, disfrutar de la naturaleza y compartir buenos momentos en un entorno tranquilo y cuidado.";
-const defaultCtaPrimary = "Descubre nuestras experiencias";
-const defaultCtaSecondary = "Contactar";
-const defaultCtaPrimaryHref = "#experiences";
-const defaultCtaSecondaryHref = "#contact";
-
-// Slides por defecto como fallback
-const defaultSlides: StrapiSlide[] = [
-	{ id: "1", title: "Kayak en la costa", subtitle: "Explora el mar", description: null, image: { alternativeText: "Kayak en la costa", name: "kayak", url: "/images/01.jpg", formats: null } },
-	{ id: "2", title: "Caminatas por los pinares", subtitle: "Conecta con la naturaleza", description: null, image: { alternativeText: "Caminata por los pinares", name: "caminata", url: "/images/02.jpg", formats: null } },
-	{ id: "3", title: "Paddle surf al atardecer", subtitle: "Equilibrio y paz", description: null, image: { alternativeText: "Paddle surf", name: "paddle", url: "/images/03.jpg", formats: null } },
-];
-
-const props = Astro.props;
-
-// Asignar valores con fallback a defaults (maneja null y undefined)
-const title = props.title ?? defaultTitle;
-const subtitle = props.subtitle ?? defaultSubtitle;
-const description = props.description ?? defaultDescription;
-const ctaPrimary = props.ctaPrimary ?? defaultCtaPrimary;
-const ctaSecondary = props.ctaSecondary ?? defaultCtaSecondary;
-const ctaPrimaryHref = props.ctaPrimaryHref ?? defaultCtaPrimaryHref;
-const ctaSecondaryHref = props.ctaSecondaryHref ?? defaultCtaSecondaryHref;
-const slides: StrapiSlide[] = props.slides ?? defaultSlides;
+const {
+	title,
+	subtitle,
+	description,
+	ctaPrimary,
+	ctaSecondary,
+	ctaPrimaryHref,
+	ctaSecondaryHref,
+	slides,
+} = Astro.props;
 
 // Obtener URL principal de imagen
 const getImageUrl = (slide: StrapiSlide): string => {
