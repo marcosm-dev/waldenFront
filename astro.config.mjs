@@ -16,10 +16,7 @@ export default defineConfig({
   // Modo server con prerender por defecto para páginas estáticas
   // Los endpoints API se renderizan en servidor
   output: 'server',
-  adapter: cloudflare(),
-  image: {
-    service: { entrypoint: 'astro/assets/services/noop' }
-  },
+  adapter: cloudflare({ imageService: 'compile' }),
 
   integrations: [mdx(), sitemap(), react()],
 
