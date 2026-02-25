@@ -3,7 +3,6 @@
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import react from '@astrojs/react';
-import node from '@astrojs/node';
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
@@ -18,6 +17,9 @@ export default defineConfig({
   // Los endpoints API se renderizan en servidor
   output: 'server',
   adapter: cloudflare(),
+  image: {
+    service: { entrypoint: 'astro/assets/services/noop' }
+  },
 
   integrations: [mdx(), sitemap(), react()],
 
