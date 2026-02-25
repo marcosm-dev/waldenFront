@@ -7,12 +7,12 @@ import type { StrapiSlide } from "../lib/data";
 
 interface Props {
 	title: string;
-	subtitle: string;
-	description: string;
-	ctaPrimary: string;
-	ctaSecondary: string;
-	ctaPrimaryHref: string;
-	ctaSecondaryHref: string;
+	subtitle: string | null;
+	description: string | null;
+	ctaPrimary: string | null;
+	ctaSecondary: string | null;
+	ctaPrimaryHref?: string | null;
+	ctaSecondaryHref?: string | null;
 	slides: StrapiSlide[];
 }
 

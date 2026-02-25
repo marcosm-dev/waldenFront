@@ -216,22 +216,26 @@ strong, b {
 	font-weight: 700;
 }
 
-a {
-	color: hsl(var(--primary));
-	text-decoration: none;
+@layer base {
+	a {
+		color: hsl(var(--primary));
+		text-decoration: none;
+	}
+
+	a:hover {
+		opacity: 0.8;
+	}
+
+	p {
+		margin-bottom: 1em;
+	}
 }
 
-a:hover {
-	opacity: 0.8;
-}
-
-p {
-	margin-bottom: 1em;
-}
-
-img {
-	max-width: 100%;
-	height: auto;
+@layer base {
+	img {
+		max-width: 100%;
+		height: auto;
+	}
 }
 
 .sr-only {
@@ -283,6 +287,13 @@ img {
 
 .text-balance {
 	text-wrap: balance;
+}
+
+/* Action buttons — show pointer cursor */
+button,
+[role="button"],
+summary {
+	cursor: pointer;
 }
 
 /* Animations */
