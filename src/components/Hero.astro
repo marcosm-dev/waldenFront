@@ -29,7 +29,6 @@ const {
 
 // Obtener URL principal de imagen
 const getImageUrl = (slide: StrapiSlide): string => {
-	console.log("SLIDE", slide);
 	if (!slide.image) return "/images/01.jpg";
 	return slide.image.url;
 };
@@ -54,6 +53,8 @@ const imageSizes = "100vw";
 const getImageAlt = (slide: StrapiSlide): string => {
 	return slide.image?.alternativeText || slide.title;
 };
+console.log("CTA PRIMARY HREF", ctaPrimaryHref);
+console.log("CTA SECONDARY HREF", ctaSecondaryHref);
 ---
 
 <section class="hero-section relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -132,13 +133,13 @@ const getImageAlt = (slide: StrapiSlide): string => {
 			>
 				<a
 					href={ctaPrimaryHref}
-					class="btn-hero-primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 font-body shadow-lg"
+					class="btn-hero-primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 font-body shadow-lg pointer-events-auto"
 				>
 					{ctaPrimary}
 				</a>
 				<a
 					href={ctaSecondaryHref}
-					class="btn-hero-secondary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 border-2 font-body"
+					class="btn-hero-secondary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 border-2 font-body pointer-events-auto"
 				>
 					{ctaSecondary}
 				</a>
