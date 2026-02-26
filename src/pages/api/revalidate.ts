@@ -34,6 +34,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 				Authorization: `Bearer ${githubToken}`,
 				Accept: 'application/vnd.github.v3+json',
 				'Content-Type': 'application/json',
+				'User-Agent': 'walden-a/revalidate',
 			},
 			body: JSON.stringify({ event_type: 'cms-update' }),
 		}
