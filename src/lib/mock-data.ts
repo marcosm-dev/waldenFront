@@ -184,7 +184,7 @@ export const navLinks: NavLink[] = [
 ];
 
 export const heroData: HeroData = {
-	title: "Experiencias al aire libre en Gran Canaria para disfrutar con calma",
+	title: "EXPERIENCIAS!! al aire libre en Gran Canaria para disfrutar con calma",
 	subtitle: "Gran Canaria, España",
 	description: "Creamos experiencias al aire libre pensadas para quienes quieren desconectar del ritmo diario, disfrutar de la naturaleza y compartir buenos momentos en un entorno cuidado y tranquilo.",
 	ctaPrimary: "Descubre nuestras experiencias",
