@@ -234,6 +234,12 @@ console.log("CTA SECONDARY HREF", ctaSecondaryHref);
 		bottom: 100px !important;
 	}
 
+	@media (max-width: 767px) {
+		.swiper-hero :global(.swiper-pagination) {
+			display: none;
+		}
+	}
+
 	.swiper-hero :global(.swiper-pagination-bullet) {
 		background: rgba(255, 255, 255, 0.5);
 		opacity: 1;
