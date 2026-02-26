@@ -36,6 +36,6 @@
     "@astrojs/check": "^0.9.6",
     "shadcn": "^3.6.3",
     "typescript": "^5.9.3",
-    "wrangler": "^4.60.0"
+    "wrangler": "^4.68.1"
   }
 }
