@@ -29,6 +29,7 @@ const {
 
 // Obtener URL principal de imagen
 const getImageUrl = (slide: StrapiSlide): string => {
+	console.log("SLIDE", slide);
 	if (!slide.image) return "/images/01.jpg";
 	return slide.image.url;
 };
