@@ -2,9 +2,9 @@
 // STRAPI GRAPHQL CLIENT
 // ============================================
 
-const STRAPI_URL = import.meta.env.STRAPI_URL || 'http://localhost:1337';
+const STRAPI_URL = import.meta.env.STRAPI_URL || 'https://admin.walden-adventures.com';
 const STRAPI_GRAPHQL_URL = `${STRAPI_URL}/graphql`;
-const STRAPI_ACCESS_TOKEN = import.meta.env.STRAPI_ACCESS_TOKEN;
+const STRAPI_ACCESS_TOKEN = import.meta.env.STRAPI_ACCESS_TOKEN || "e55dcba9f8458a9576685677b949997cf1c549db7310ee69536deeaa48e215b4c3acbe14162b4878b67b7feec5ad8203ed17b6b9965a294918b979e3f0c549ee1a46bcd3991e252f54cdeeed5bd41734a0ef9fefda7b9cc0e1d062ef3bd51e3b615bc6ce13f696f6132e57021485fec1d591eb2ba3685c062bad2a7a10006f5f";
 
 // ============================================
 // TIPOS PARA STRAPI
