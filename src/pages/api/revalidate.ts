@@ -1,18 +1,22 @@
 import type { APIRoute } from 'astro';
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
+	// En Cloudflare Workers, las vars y secrets se acceden via locals.runtime.env
+	// import.meta.env solo funciona en build time (páginas prerendered)
+	const env = locals.runtime.env;
+
 	// Validar el secret para autorizar la petición desde Strapi
 	const secret = request.headers.get('x-webhook-secret');
 
-	if (!secret || secret !== import.meta.env.REVALIDATE_SECRET) {
+	if (!secret || secret !== env.REVALIDATE_SECRET) {
 		return new Response(JSON.stringify({ error: 'Unauthorized' }), {
 			status: 401,
 			headers: { 'Content-Type': 'application/json' },
 		});
 	}
 
-	const githubRepo = import.meta.env.GITHUB_REPO; // formato: "owner/repo"
-	const githubToken = import.meta.env.GITHUB_TOKEN;
+	const githubRepo = env.GITHUB_REPO; // formato: "owner/repo"
+	const githubToken = env.GITHUB_TOKEN;
 
 	if (!githubRepo || !githubToken) {
 		return new Response(JSON.stringify({ error: 'GitHub config missing' }), {
