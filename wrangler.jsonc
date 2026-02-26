@@ -19,7 +19,7 @@
     "BASIC_AUTH_USER": "admin",
     "BASIC_AUTH_PASS": "password",
     "STRAPI_ACCESS_TOKEN": "e55dcba9f8458a9576685677b949997cf1c549db7310ee69536deeaa48e215b4c3acbe14162b4878b67b7feec5ad8203ed17b6b9965a294918b979e3f0c549ee1a46bcd3991e252f54cdeeed5bd41734a0ef9fefda7b9cc0e1d062ef3bd51e3b615bc6ce13f696f6132e57021485fec1d591eb2ba3685c062bad2a7a10006f5f",
-    "GITHUB_REPO": "marcosm-dev/walden-a"
+    "GITHUB_REPO": "marcosm-dev/waldenFront"
   }
   // Secrets (set via: wrangler secret put REVALIDATE_SECRET / wrangler secret put GITHUB_TOKEN):
   // - REVALIDATE_SECRET: token secreto que Strapi enviará en el header x-webhook-secret
