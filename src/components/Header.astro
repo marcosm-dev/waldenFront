@@ -6,9 +6,11 @@ interface Props {
 const { siteTitle = "Walden Adventures" } = Astro.props;
 
 const navLinks = [
-	{ href: "#experiences", label: "Experiencias" },
-	{ href: "#philosophy", label: "Filosofía" },
-	{ href: "#contact", label: "Contacto" },
+	{ href: "#experiencias", label: "Experiencias" },
+	{ href: "#filosofia", label: "Filosofía" },
+	{ href: "#precios", label: "Precios" },
+	{ href: "#testimonios", label: "Opiniones" },
+	{ href: "#contacto", label: "Contacto" },
 ];
 ---
 
@@ -50,7 +52,7 @@ const navLinks = [
 				</a>
 			))}
 			<a
-				href="#contact"
+				href="#contacto"
 				class="btn-reservar inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium h-9 px-4 py-2 transition-all duration-300 font-body"
 			>
 				Reservar

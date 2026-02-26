@@ -176,11 +176,11 @@ export const siteSettings: SiteSettings = {
 };
 
 export const navLinks: NavLink[] = [
-	{ href: "#experiences", label: "Experiencias" },
-	{ href: "#philosophy", label: "Filosofía" },
-	{ href: "#pricing", label: "Precios" },
-	{ href: "#testimonials", label: "Opiniones" },
-	{ href: "#contact", label: "Contacto" },
+	{ href: "#experiencias", label: "Experiencias" },
+	{ href: "#filosofia", label: "Filosofía" },
+	{ href: "#precios", label: "Precios" },
+	{ href: "#testimonios", label: "Opiniones" },
+	{ href: "#contacto", label: "Contacto" },
 ];
 
 export const heroData: HeroData = {
@@ -189,8 +189,8 @@ export const heroData: HeroData = {
 	description: "Creamos experiencias al aire libre pensadas para quienes quieren desconectar del ritmo diario, disfrutar de la naturaleza y compartir buenos momentos en un entorno cuidado y tranquilo.",
 	ctaPrimary: "Descubre nuestras experiencias",
 	ctaSecondary: "Contactar",
-	ctaPrimaryHref: "#experiences",
-	ctaSecondaryHref: "#contact",
+	ctaPrimaryHref: "#experiencias",
+	ctaSecondaryHref: "#contacto",
 	slides: [
 		{ title: "Kayak en la costa", subtitle: "Explora el mar", image: "/images/01.jpg", alt: "Kayak en la costa de Gran Canaria" },
 		{ title: "Caminatas por los pinares", subtitle: "Conecta con la naturaleza", image: "/images/02.jpg", alt: "Caminata por los pinares" },
