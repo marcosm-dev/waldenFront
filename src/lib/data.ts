@@ -71,6 +71,7 @@ async function graphqlFetch<T>(query: string): Promise<T | null> {
 		const result = await response.json();
 
 		if (!response.ok) {
+			
 			console.error(`[Strapi] HTTP error: ${response.status}`, JSON.stringify(result, null, 2));
 			return null;
 		}
