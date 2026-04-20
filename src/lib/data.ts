@@ -144,7 +144,6 @@ async function graphqlFetch<T>(query: string): Promise<T | null> {
 		});
 
 		const result = await response.json();
-		console.log(result)
 
 		if (!response.ok) {
 			
@@ -161,7 +160,7 @@ async function graphqlFetch<T>(query: string): Promise<T | null> {
 		}
 		return result.data as T;
 	} catch (error) {
-		
+
 		console.error('[Strapi] Fetch error:', error);
 		return null;
 	}
