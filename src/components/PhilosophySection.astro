@@ -9,6 +9,12 @@ interface Props {
 const { philosophy } = Astro.props;
 const { column1, column2 } = philosophy;
 
+const DEFAULT_ICONS = ['users', 'clock', 'heart', 'leaf'];
+
+const getItemIcon = (item: { icon: string | null }, index: number): string => {
+	return item.icon || DEFAULT_ICONS[index % DEFAULT_ICONS.length];
+};
+
 const getImageUrl = (image: StrapiImage | null): string => {
 	if (!image) return '';
 	return image.formats?.medium?.url || image.formats?.large?.url || image.url;
@@ -36,16 +42,16 @@ const getImageUrl = (image: StrapiImage | null): string => {
 							{column1.description}
 						</p>
 					)}
-					<div class="grid sm:grid-cols-2 gap-6">
-						{column1.items.map((item) => (
-							<div class="flex items-start gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors duration-300">
-								<div class="p-2 rounded-lg bg-ocean/10">
-									<DynamicIcon
-										name={item.icon}
-										size={24}
-										className="text-ocean"
-									/>
-								</div>
+				<div class="grid sm:grid-cols-2 gap-6">
+					{column1.items.map((item, index) => (
+						<div class="flex items-start gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors duration-300">
+							<div class="p-2 rounded-lg bg-ocean/10">
+								<DynamicIcon
+									name={getItemIcon(item, index)}
+									size={24}
+									className="text-ocean"
+								/>
+							</div>
 								<div>
 									<h4 class="font-heading text-lg text-foreground mb-1">
 										{item.title}
