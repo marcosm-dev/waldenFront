@@ -44,13 +44,88 @@ export interface ComponentHeroBanner {
 	slides: StrapiSlide[];
 }
 
-// Dynamic Zone Hero - puede contener múltiples tipos de componentes
-// Añade más tipos aquí si agregas otros componentes a la Dynamic Zone
-export type HeroDynamicZone = ComponentHeroBanner; // | ComponentOtroTipo
+// Dynamic Zone Hero
+export type HeroDynamicZone = ComponentHeroBanner;
+
+// Pricing de Strapi (campo directo en Home)
+export interface StrapiPricingPlan {
+	id: string;
+	title: string;
+	subtitle: string | null;
+	price: string;
+	description: string | null;
+}
+
+export interface StrapiPricingDetail {
+	id: string;
+	title: string;
+	icon: string | null;
+	desc: string | null;
+}
+
+export interface StrapiPricing {
+	id: string;
+	title: string | null;
+	subtitle: string | null;
+	description: string | null;
+	plan: StrapiPricingPlan[];
+	details: StrapiPricingDetail[];
+}
+
+// Experiences de Strapi
+export interface StrapiExperienceDetail {
+	id: string;
+	description: string;
+	icon: string;
+	image: StrapiImage | null;
+}
+
+export interface StrapiExperience {
+	documentId: string;
+	name: string;
+	slug: string;
+	details: StrapiExperienceDetail[];
+}
+
+// Filosofia de Strapi (campo directo en Home)
+export interface StrapiFilosofiaItem {
+	id: string;
+	title: string | null;
+	subtitle: string | null;
+	description: string | null;
+	icon: string | null;
+	image: StrapiImage | null;
+}
+
+export interface StrapiFilosofiaColumn1 {
+	id: string;
+	title: string | null;
+	subtitle: string | null;
+	description: string | null;
+	items: StrapiFilosofiaItem[];
+}
+
+export interface StrapiFilosofiaColumn2 {
+	id: string;
+	title: string | null;
+	subtitle: string | null;
+	description: string | null;
+	icon: string | null;
+	image: StrapiImage | null;
+}
+
+export interface StrapiFilosofia {
+	id: string;
+	column1: StrapiFilosofiaColumn1;
+	column2: StrapiFilosofiaColumn2;
+}
 
 export interface StrapiHome {
 	documentId: string;
 	Hero: HeroDynamicZone[];
+	Experiences: StrapiExperience[];
+	Pricing: StrapiPricing | null;
+	Filosofia: StrapiFilosofia | null;
 }
 
 // ============================================
@@ -69,6 +144,7 @@ async function graphqlFetch<T>(query: string): Promise<T | null> {
 		});
 
 		const result = await response.json();
+		console.log(result)
 
 		if (!response.ok) {
 			
@@ -78,6 +154,9 @@ async function graphqlFetch<T>(query: string): Promise<T | null> {
 
 		if (result.errors?.length) {
 			console.error('[Strapi] GraphQL errors:', JSON.stringify(result.errors, null, 2));
+			if (result.data) {
+				return result.data as T;
+			}
 			return null;
 		}
 		return result.data as T;
@@ -95,6 +174,84 @@ const HOME_QUERY = `
 query {
   home {
     documentId
+		Experiences {
+      documentId
+      details {
+        description
+        icon
+        id
+        image {
+          documentId
+          alternativeText
+          caption
+          width
+          height
+          formats
+          ext
+          size
+          url
+          updatedAt
+          previewUrl
+          name
+        }
+      }
+      name
+      slug
+    }
+    Pricing {
+      id
+      title
+      subtitle
+      description
+      plan {
+        id
+        title
+        subtitle
+        price
+        description
+      }
+      details {
+        id
+        title
+        icon
+        desc
+      }
+    }
+    Filosofia {
+      id
+      column1 {
+        id
+        title
+        subtitle
+        description
+        items {
+          id
+          title
+          subtitle
+          description
+          icon
+          image {
+            alternativeText
+            name
+            url
+            formats
+          }
+        }
+      }
+      column2 {
+        id
+        title
+        subtitle
+        description
+        icon
+        image {
+          alternativeText
+          name
+          url
+          formats
+        }
+      }
+    }
     Hero {
       ... on ComponentHeroBanner {
         id
@@ -132,6 +289,7 @@ query {
  */
 export async function getHome(): Promise<StrapiHome | null> {
 	const data = await graphqlFetch<{ home: StrapiHome }>(HOME_QUERY);
+	console.log(JSON.stringify(data, null, 2));
 	return data?.home || null;
 }
 
@@ -150,40 +308,29 @@ export function getImageUrl(
 }
 
 // ============================================
-// INTEGRACIÓN CON MOCK DATA (FALLBACK)
+// TIPOS PARA LA PÁGINA HOME
 // ============================================
 
 import {
 	type SiteSettings,
 	type NavLink,
-	type Experience,
-	type PhilosophyData,
-	type PricingData,
 	type TestimonialsData,
 	type ContactData,
 	type FooterData,
 	siteSettings,
 	navLinks,
-	heroData as mockHeroData,
-	experiencesData,
-	philosophyData,
-	pricingData,
 	testimonialsData,
 	contactData,
 	footerData,
 } from './mock-data';
 
-// ============================================
-// TIPOS PARA LA PÁGINA HOME
-// ============================================
-
 export interface HomePageData {
 	site: SiteSettings;
 	nav: NavLink[];
-	hero: HeroDynamicZone[];
-	experiences: Experience[];
-	philosophy: PhilosophyData;
-	pricing: PricingData;
+	hero: ComponentHeroBanner | null;
+	experiences: StrapiExperience[];
+	philosophy: StrapiFilosofia | null;
+	pricing: StrapiPricing | null;
 	testimonials: TestimonialsData;
 	contact: ContactData;
 	footer: FooterData;
@@ -195,13 +342,16 @@ export interface HomePageData {
 export async function getPageData(): Promise<HomePageData> {
 	const home = await getHome();
 
+	console.log('[getPageData] Pricing:', JSON.stringify(home?.Pricing, null, 2));
+	console.log('[getPageData] Filosofia:', JSON.stringify(home?.Filosofia, null, 2));
+
 	return {
 		site: siteSettings,
 		nav: navLinks,
-		hero: home?.Hero ?? [mockHeroData as unknown as ComponentHeroBanner],
-		experiences: experiencesData,
-		philosophy: philosophyData,
-		pricing: pricingData,
+		hero: home?.Hero?.[0] ?? null,
+		experiences: home?.Experiences ?? [],
+		philosophy: home?.Filosofia ?? null,
+		pricing: home?.Pricing ?? null,
 		testimonials: testimonialsData,
 		contact: contactData,
 		footer: footerData,

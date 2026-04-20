@@ -14,10 +14,7 @@ import ContactSection from "../components/ContactSection.astro";
 // Strapi GraphQL Service
 import { getPageData } from "../lib/data";
 
-// Obtener datos de Strapi (con fallback a mock data)
 const data = await getPageData();
-
-const [hero] = data.hero;
 
 ---
 
@@ -29,30 +26,35 @@ const [hero] = data.hero;
   <body class="min-h-screen">
     <Header siteTitle={data.site.title} />
     <main>
-      <Hero
-        title={hero.title}
-        subtitle={hero.subtitle}
-        description={hero.description}
-        ctaPrimary={hero.ctaPrimary}
-        ctaSecondary={hero.ctaSecondary}
-        ctaPrimaryHref={hero.ctaPrimaryHref}
-        ctaSecondaryHref={hero.ctaSecondaryHref}
-        slides={hero.slides}
-      />
-      <ExperiencesSection />
-      <PhilosophySection
-        subtitle={data.philosophy.subtitle}
-        title={data.philosophy.title}
-        description={data.philosophy.description}
-        items={data.philosophy.items}
-      />
-      <PricingSection />
+      {data.hero && (
+        <Hero
+          title={data.hero.title}
+          subtitle={data.hero.subtitle}
+          description={data.hero.description}
+          ctaPrimary={data.hero.ctaPrimary}
+          ctaSecondary={data.hero.ctaSecondary}
+          ctaPrimaryHref={data.hero.ctaPrimaryHref}
+          ctaSecondaryHref={data.hero.ctaSecondaryHref}
+          slides={data.hero.slides}
+        />
+      )}
+      {data.experiences.length > 0 && (
+        <ExperiencesSection experiences={data.experiences} />
+      )}
+      {data.philosophy && (
+        <PhilosophySection philosophy={data.philosophy} />
+      )}
+      {data.pricing && (
+        <PricingSection pricing={data.pricing} />
+      )}
+      {/* TODO: Testimonials temporalmente ocultos
       <TestimonialsSection
         subtitle={data.testimonials.subtitle}
         title={data.testimonials.title}
         description={data.testimonials.description}
         testimonials={data.testimonials.testimonials}
       />
+      */}
       <ContactSection
         title={data.contact.title}
         subtitle={data.contact.subtitle}
