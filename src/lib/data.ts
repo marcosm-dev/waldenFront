@@ -161,6 +161,7 @@ async function graphqlFetch<T>(query: string): Promise<T | null> {
 		}
 		return result.data as T;
 	} catch (error) {
+		
 		console.error('[Strapi] Fetch error:', error);
 		return null;
 	}
