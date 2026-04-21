@@ -214,25 +214,6 @@ query {
       name
       slug
     }
-    Pricing {
-      id
-      title
-      subtitle
-      description
-      plan {
-        id
-        title
-        subtitle
-        price
-        description
-      }
-      details {
-        id
-        title
-        icon
-        desc
-      }
-    }
     Filosofia {
       id
       column1 {
