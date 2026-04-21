@@ -15,10 +15,17 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={`Blog · ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 		<style>
+			.blog-page-title {
+				margin: 0 0 1.5rem 0;
+				text-align: center;
+				font-size: 2rem;
+				font-weight: 600;
+				line-height: 1.2;
+			}
 			main {
 				width: 960px;
 			}
@@ -64,7 +71,7 @@ const posts = (await getCollection('blog')).sort(
 				margin: 0;
 				color: rgb(var(--gray));
 			}
-			ul li a:hover h4,
+			ul li a:hover h2,
 			ul li a:hover .date {
 				color: rgb(var(--accent));
 			}
@@ -91,16 +98,22 @@ const posts = (await getCollection('blog')).sort(
 	<body>
 		<Header />
 		<main>
-			<section>
+			<section aria-labelledby="blog-heading">
+				<h1 id="blog-heading" class="blog-page-title">Blog</h1>
 				<ul>
 					{
 						posts.map((post) => (
 							<li>
 								<a href={`/blog/${post.id}/`}>
 									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
+										<Image
+											width={720}
+											height={360}
+											src={post.data.heroImage}
+											alt={`Imagen destacada: ${post.data.title}`}
+										/>
 									)}
-									<h4 class="title">{post.data.title}</h4>
+									<h2 class="title">{post.data.title}</h2>
 									<p class="date">
 										<FormattedDate date={post.data.pubDate} />
 									</p>

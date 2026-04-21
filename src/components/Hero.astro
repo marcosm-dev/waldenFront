@@ -4,6 +4,7 @@ import "swiper/css/pagination";
 import "../lib/effects/effect-super-flow.css";
 
 import type { StrapiSlide } from "../lib/data";
+import { getStrapiImageDefaultSrc } from "../lib/strapi-image";
 import Button from "./ui/Button.astro";
 
 interface Props {
@@ -28,13 +29,8 @@ const {
 	slides,
 } = Astro.props;
 
-// Obtener URL principal de imagen
-const getImageUrl = (slide: StrapiSlide): string => {
-	if (!slide.image) return "/images/01.jpg";
-	return slide.image.url;
-};
+const getImageUrl = (slide: StrapiSlide): string => getStrapiImageDefaultSrc(slide);
 
-// Generar srcset para imágenes responsive
 const getImageSrcset = (slide: StrapiSlide): string | undefined => {
 	if (!slide.image?.formats) return undefined;
 
@@ -46,7 +42,7 @@ const getImageSrcset = (slide: StrapiSlide): string | undefined => {
 	if (formats.large?.url) srcsetParts.push(`${formats.large.url} 1000w`);
 	if (slide.image.url) srcsetParts.push(`${slide.image.url} 1920w`);
 
-	return srcsetParts.length > 0 ? srcsetParts.join(', ') : undefined;
+	return srcsetParts.length > 0 ? srcsetParts.join(", ") : undefined;
 };
 
 const imageSizes = "100vw";
@@ -82,52 +78,25 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	<!-- Gradient Overlay -->
 	<div class="absolute inset-0 gradient-hero z-1"></div>
 
-	<!-- Content -->
+	<!-- Content: h1 primero en el DOM (SEO); order-* conserva el orden visual -->
 	<div class="relative z-10 container mx-auto px-6 text-center">
-		<div class="max-w-4xl mx-auto">
-			<!-- Slide subtitle - dinámico (cambia con cada slide) -->
-			<p
-				id="hero-slide-subtitle"
-				class="font-body text-cream/80 text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
-			>
-				{slides[0]?.subtitle || ""}
-			</p>
-
-			<!-- Slide title - dinámico (cambia con cada slide) -->
-			<h2
-				id="hero-slide-title"
-				class="font-heading text-2xl md:text-3xl lg:text-4xl text-cream/90 font-medium leading-tight mb-10 transition-all duration-500"
-			>
-				{slides[0]?.title || ""}
-			</h2>
-
-			<!-- Subtítulo fijo -->
-			<p
-				class="font-body text-cream/90 text-sm tracking-[0.3em] uppercase mb-6 animate-fade-in"
-				style="animation-delay: 0.2s;"
-			>
-				{subtitle}
-			</p>
-
-			<!-- Título principal -->
+		<div class="max-w-4xl mx-auto flex flex-col">
 			<h1
-				class="font-heading text-5xl md:text-7xl lg:text-8xl text-cream font-medium leading-tight mb-6 animate-fade-in"
+				class="order-4 font-heading text-5xl md:text-7xl lg:text-8xl text-cream font-medium leading-tight mb-6 animate-fade-in"
 				style="animation-delay: 0.4s;"
 			>
 				{title}
 			</h1>
 
-			<!-- Descripción -->
 			<p
-				class="font-body text-cream/90 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in"
+				class="order-5 font-body text-cream/90 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in"
 				style="animation-delay: 0.6s;"
 			>
 				{description}
 			</p>
 
-			<!-- CTAs -->
 			<div
-				class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
+				class="order-6 flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
 				style="animation-delay: 0.8s;"
 			>
 				{ctaPrimary && ctaPrimaryHref && (
@@ -141,6 +110,28 @@ const getImageAlt = (slide: StrapiSlide): string => {
 					</Button>
 				)}
 			</div>
+
+			<p
+				class="order-3 font-body text-cream/90 text-sm tracking-[0.3em] uppercase mb-6 animate-fade-in"
+				style="animation-delay: 0.2s;"
+			>
+				{subtitle}
+			</p>
+
+			<!-- Título de slide (p, no h2: el único h1 es el principal arriba en el DOM) -->
+			<p
+				id="hero-slide-title"
+				class="order-2 font-heading text-2xl md:text-3xl lg:text-4xl text-cream/90 font-medium leading-tight mb-10 transition-all duration-500"
+			>
+				{slides[0]?.title || ""}
+			</p>
+
+			<p
+				id="hero-slide-subtitle"
+				class="order-1 font-body text-cream/80 text-sm tracking-[0.3em] uppercase mb-4 transition-all duration-500"
+			>
+				{slides[0]?.subtitle || ""}
+			</p>
 		</div>
 	</div>
 

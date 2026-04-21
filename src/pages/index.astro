@@ -13,15 +13,22 @@ import ContactSection from "../components/ContactSection.astro";
 
 // Strapi GraphQL Service
 import { getPageData } from "../lib/data";
+import { getFirstHeroImagePreloadHref } from "../lib/strapi-image";
 
 const data = await getPageData();
+const heroPreloadHref = getFirstHeroImagePreloadHref(data.hero?.slides);
 
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
-    <BaseHead title={data.site.title} description={data.site.description} />
+    <BaseHead
+      title={data.site.title}
+      description={data.site.description}
+      siteName={data.site.title}
+      preloadImageHref={heroPreloadHref}
+    />
   </head>
   <body class="min-h-screen">
     <Header siteTitle={data.site.title} />

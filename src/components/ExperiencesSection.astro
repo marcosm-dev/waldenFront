@@ -49,8 +49,9 @@ const getImageAlt = (image: StrapiImage | null, fallback: string): string => {
 				if (!detail) return null;
 
 				return (
-					<div
-						class="group relative overflow-hidden rounded-2xl shadow-card hover:shadow-elevated transition-all duration-500 cursor-pointer"
+					<a
+						href={`/${experience.slug}`}
+						class="group relative overflow-hidden rounded-2xl shadow-card hover:shadow-elevated transition-all duration-500 cursor-pointer block"
 						style={`animation-delay: ${index * 0.1}s`}
 					>
 						<div class="relative aspect-4/3 overflow-hidden">
@@ -79,7 +80,7 @@ const getImageAlt = (image: StrapiImage | null, fallback: string): string => {
 								{detail.description}
 							</p>
 						</div>
-					</div>
+					</a>
 				);
 			})}
 		</div>

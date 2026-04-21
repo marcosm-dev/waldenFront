@@ -14,6 +14,9 @@ export interface StrapiImage {
 	alternativeText: string | null;
 	name: string;
 	url: string;
+	/** Dimensiones del original (Strapi Media Library), útiles para astro:assets */
+	width?: number;
+	height?: number;
 	formats: {
 		thumbnail?: { url: string };
 		small?: { url: string };
@@ -85,6 +88,19 @@ export interface StrapiExperience {
 	name: string;
 	slug: string;
 	details: StrapiExperienceDetail[];
+	/**
+	 * Campos extendidos para la página de detalle.
+	 * Todos opcionales: si no están definidos todavía en Strapi
+	 * la página usa valores por defecto para no romperse.
+	 */
+	tagline?: string | null;
+	longDescription?: string | null;
+	price?: string | null;
+	duration?: string | null;
+	difficulty?: string | null;
+	groupSize?: string | null;
+	highlights?: Array<{ id?: string; text: string }> | null;
+	includes?: Array<{ id?: string; text: string }> | null;
 }
 
 // Filosofia de Strapi (campo directo en Home)
@@ -291,6 +307,114 @@ export async function getHome(): Promise<StrapiHome | null> {
 	const data = await graphqlFetch<{ home: StrapiHome }>(HOME_QUERY);
 	console.log(JSON.stringify(data, null, 2));
 	return data?.home || null;
+}
+
+// ============================================
+// QUERIES PARA EXPERIENCES (collection type)
+// ============================================
+
+/**
+ * Fragmento de campos usado tanto en la query por slug
+ * como en la lista "otras experiencias". Incluye los campos
+ * extendidos (tagline, highlights, etc.) pero todos son
+ * opcionales en Strapi: si no existen aún, el servidor los
+ * devolverá como null/undefined y la página usará defaults.
+ */
+const EXPERIENCE_FIELDS = `
+  documentId
+  name
+  slug
+  tagline
+  longDescription
+  price
+  duration
+  difficulty
+  groupSize
+  highlights {
+    id
+    text
+  }
+  includes {
+    id
+    text
+  }
+  details {
+    id
+    description
+    icon
+    image {
+      documentId
+      alternativeText
+      caption
+      width
+      height
+      formats
+      ext
+      size
+      url
+      updatedAt
+      previewUrl
+      name
+    }
+  }
+`;
+
+const EXPERIENCE_BY_SLUG_QUERY = (slug: string) => `
+query {
+  experiences(filters: { slug: { eq: "${slug}" } }) {
+    ${EXPERIENCE_FIELDS}
+  }
+}
+`;
+
+const ALL_EXPERIENCES_QUERY = `
+query {
+  experiences {
+    ${EXPERIENCE_FIELDS}
+  }
+}
+`;
+
+/**
+ * Devuelve una experiencia por su slug, o null si no existe.
+ * Si la query directa falla, hace fallback al listado completo.
+ */
+export async function getExperienceBySlug(
+	slug: string,
+): Promise<StrapiExperience | null> {
+	if (!slug) return null;
+	const data = await graphqlFetch<{ experiences: StrapiExperience[] }>(
+		EXPERIENCE_BY_SLUG_QUERY(slug),
+	);
+	const direct = data?.experiences?.[0];
+	if (direct) return direct;
+
+	const all = await getAllExperiences();
+	return all.find((e) => e.slug === slug) ?? null;
+}
+
+/**
+ * Devuelve todas las experiencias. Útil para getStaticPaths y
+ * para la sección "otras experiencias".
+ *
+ * Fallback: si la query directa al collection type `experiences`
+ * falla (p.ej. el nombre es distinto en tu Strapi), intenta leer
+ * las experiencias a través de `home.Experiences`, que sí sabemos
+ * que funciona porque es la que usa la home.
+ */
+export async function getAllExperiences(): Promise<StrapiExperience[]> {
+	const direct = await graphqlFetch<{ experiences: StrapiExperience[] }>(
+		ALL_EXPERIENCES_QUERY,
+	);
+	if (direct?.experiences && direct.experiences.length > 0) {
+		return direct.experiences;
+	}
+
+	console.warn(
+		'[Strapi] `experiences` query vacía o fallida — usando fallback home.Experiences',
+	);
+	const home = await getHome();
+	return home?.Experiences ?? [];
 }
 
 /**
