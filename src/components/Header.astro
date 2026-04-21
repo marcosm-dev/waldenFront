@@ -122,7 +122,7 @@ const navLinks = [
 			<a
 				href="#contacto"
 				class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium h-10 px-4 py-2 mt-2 transition-all duration-300 font-body"
-				style="background-color: hsl(158 35% 25%); color: hsl(45 30% 97%);"
+				style="background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); box-shadow: 0 4px 20px -4px hsl(var(--forest) / 0.1);"
 			>
 				Reservar
 			</a>
@@ -152,15 +152,16 @@ const navLinks = [
 		color: hsl(var(--cream));
 	}
 
-	/* Botón heroOutline: borde cream, fondo transparente */
+	/* Botón outline sobre hero (misma lógica que btn-hero-outline) */
 	.header-transparent .btn-reservar {
-		border: 2px solid hsl(var(--cream));
-		color: hsl(var(--cream));
+		border: 2px solid #ffffff;
+		color: #ffffff;
 		background: transparent;
 	}
 
 	.header-transparent .btn-reservar:hover {
-		background: hsl(var(--cream) / 0.1);
+		background: #ffffff;
+		color: #0a0a0a;
 	}
 
 	/* Estado scrolled: fondo sólido */
@@ -188,15 +189,17 @@ const navLinks = [
 		color: hsl(var(--foreground));
 	}
 
-	/* Botón scrolled: fondo terracotta (naranja) con texto blanco */
+	/* Botón scrolled: igual que variante default (primary / forest) */
 	.header-scrolled .btn-reservar {
 		border: none;
-		background: hsl(var(--terracotta));
-		color: #ffffff;
+		background: hsl(var(--primary));
+		color: hsl(var(--primary-foreground));
+		box-shadow: 0 4px 20px -4px hsl(var(--forest) / 0.1);
 	}
 
 	.header-scrolled .btn-reservar:hover {
-		background: hsl(var(--terracotta) / 0.9);
+		background: hsl(var(--primary) / 0.9);
+		box-shadow: 0 8px 30px -8px hsl(var(--forest) / 0.15);
 	}
 
 	/* Logo icono */

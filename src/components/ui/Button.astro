@@ -5,6 +5,9 @@ interface Props {
 	href?: string;
 	class?: string;
 	type?: 'button' | 'submit' | 'reset';
+	title?: string;
+	target?: string;
+	rel?: string;
 }
 
 const {
@@ -13,6 +16,9 @@ const {
 	href,
 	class: className = '',
 	type = 'button',
+	title,
+	target,
+	rel,
 	...rest
 } = Astro.props;
 
@@ -48,7 +54,7 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} 
 ---
 
 {isLink ? (
-	<a href={href} class={classes} {...rest}>
+	<a href={href} class={classes} title={title} target={target} rel={rel} {...rest}>
 		<slot />
 	</a>
 ) : (
@@ -125,11 +131,11 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} 
 		text-decoration-line: underline;
 	}
 
-	/* Hero - Fondo crema, texto verde */
+	/* Hero - Fondo blanco, texto negro (sobre fondos oscuros) */
 	.btn-hero {
-		background-color: hsl(45 30% 97%); /* cream */
-		color: hsl(158 35% 25%); /* forest */
-		border: 2px solid hsl(45 30% 97%);
+		background-color: #ffffff;
+		color: #0a0a0a;
+		border: 2px solid #ffffff;
 		font-weight: 600;
 		letter-spacing: 0.025em;
 		box-shadow: 0 20px 50px -15px hsl(158 35% 25% / 0.2);
@@ -137,22 +143,23 @@ const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} 
 
 	.btn-hero:hover {
 		background-color: transparent;
-		color: hsl(45 30% 97%);
+		color: #ffffff;
+		border-color: #ffffff;
 		box-shadow: 0 4px 20px -4px hsl(158 35% 25% / 0.1);
 	}
 
-	/* Hero Outline - Transparente con borde crema */
+	/* Hero Outline - Borde y texto blancos; hover relleno blanco + texto negro */
 	.btn-hero-outline {
 		background-color: transparent;
-		color: hsl(45 30% 97%); /* cream */
-		border: 2px solid hsl(45 30% 97%);
+		color: #ffffff;
+		border: 2px solid #ffffff;
 		font-weight: 600;
 		letter-spacing: 0.025em;
 	}
 
 	.btn-hero-outline:hover {
-		background-color: hsl(45 30% 97%);
-		color: hsl(158 35% 25%); /* forest */
+		background-color: #ffffff;
+		color: #0a0a0a;
 	}
 
 	/* Ocean - Azul océano */

@@ -4,6 +4,7 @@ import "swiper/css/pagination";
 import "../lib/effects/effect-super-flow.css";
 
 import type { StrapiSlide } from "../lib/data";
+import Button from "./ui/Button.astro";
 
 interface Props {
 	title: string;
@@ -129,32 +130,44 @@ const getImageAlt = (slide: StrapiSlide): string => {
 				class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in"
 				style="animation-delay: 0.8s;"
 			>
-				<a
-					href={ctaPrimaryHref}
-					class="btn-hero-primary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 font-body shadow-lg pointer-events-auto"
-				>
-					{ctaPrimary}
-				</a>
-				<a
-					href={ctaSecondaryHref}
-					class="btn-hero-secondary inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-base font-medium h-14 px-10 py-4 transition-all duration-300 border-2 font-body pointer-events-auto"
-				>
-					{ctaSecondary}
-				</a>
+				{ctaPrimary && ctaPrimaryHref && (
+					<Button variant="hero" size="xl" href={ctaPrimaryHref} class="pointer-events-auto">
+						{ctaPrimary}
+					</Button>
+				)}
+				{ctaSecondary && ctaSecondaryHref && (
+					<Button variant="heroOutline" size="xl" href={ctaSecondaryHref} class="pointer-events-auto">
+						{ctaSecondary}
+					</Button>
+				)}
 			</div>
 		</div>
 	</div>
 
-	<!-- Scroll Indicator -->
-	<a
-		href="#experiencias"
-		class="absolute bottom-10 left-1/2 -translate-x-1/2 hover:text-cream transition-colors animate-float z-10 text-white!"
-		aria-label="Scroll hacia experiencias"
-	>
-		<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-			<path d="m6 9 6 6 6-6"/>
-		</svg>
-	</a>
+	<!-- Scroll Indicator: contenedor a ancho completo + flex para centrado estable -->
+	<div class="pointer-events-none absolute bottom-10 left-0 right-0 z-10 flex justify-center">
+		<a
+			href="#experiencias"
+			class="pointer-events-auto inline-flex text-white hover:text-cream transition-colors"
+			aria-label="Scroll hacia experiencias"
+		>
+			<span class="hero-scroll-arrow inline-flex" aria-hidden="true">
+				<svg
+					class="block"
+					width="32"
+					height="32"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<path d="m6 9 6 6 6-6" />
+				</svg>
+			</span>
+		</a>
+	</div>
 </section>
 
 <!-- Datos de slides para JavaScript -->
@@ -168,26 +181,6 @@ const getImageAlt = (slide: StrapiSlide): string => {
 		min-height: 100dvh;
 		height: 100vh;
 		height: 100dvh;
-	}
-
-	/* Botones CTA del Hero */
-	.btn-hero-primary {
-		background-color: hsl(var(--terracotta));
-		color: #ffffff;
-	}
-
-	.btn-hero-primary:hover {
-		background-color: hsl(var(--terracotta) / 0.9);
-	}
-
-	.btn-hero-secondary {
-		background-color: transparent;
-		border-color: hsl(var(--cream));
-		color: hsl(var(--cream));
-	}
-
-	.btn-hero-secondary:hover {
-		background-color: hsl(var(--cream) / 0.1);
 	}
 
 	/* Swiper fullscreen background */
@@ -246,7 +239,7 @@ const getImageAlt = (slide: StrapiSlide): string => {
 	}
 
 	.swiper-hero :global(.swiper-pagination-bullet-active) {
-		background: hsl(var(--terracotta));
+		background: #ffffff;
 		width: 30px;
 		border-radius: 5px;
 	}
@@ -268,18 +261,19 @@ const getImageAlt = (slide: StrapiSlide): string => {
 		animation: fadeIn 0.8s ease-out forwards;
 	}
 
-	/* Animación flotante para scroll indicator */
-	@keyframes float {
-		0%, 100% {
-			transform: translateX(-50%) translateY(0);
+	/* Solo translateY: el centrado horizontal lo hace el flex del contenedor */
+	@keyframes hero-scroll-float {
+		0%,
+		100% {
+			transform: translateY(0);
 		}
 		50% {
-			transform: translateX(-50%) translateY(-10px);
+			transform: translateY(-10px);
 		}
 	}
 
-	.animate-float {
-		animation: float 2s ease-in-out infinite;
+	.hero-scroll-arrow {
+		animation: hero-scroll-float 2s ease-in-out infinite;
 	}
 </style>
 
