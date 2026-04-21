@@ -305,7 +305,6 @@ query {
  */
 export async function getHome(): Promise<StrapiHome | null> {
 	const data = await graphqlFetch<{ home: StrapiHome }>(HOME_QUERY);
-	console.log(JSON.stringify(data, null, 2));
 	return data?.home || null;
 }
 
@@ -465,9 +464,6 @@ export interface HomePageData {
  */
 export async function getPageData(): Promise<HomePageData> {
 	const home = await getHome();
-
-	console.log('[getPageData] Pricing:', JSON.stringify(home?.Pricing, null, 2));
-	console.log('[getPageData] Filosofia:', JSON.stringify(home?.Filosofia, null, 2));
 
 	return {
 		site: siteSettings,

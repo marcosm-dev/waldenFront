@@ -33,11 +33,6 @@ export async function getStaticPaths() {
 	const experiences = await getAllExperiences();
 	const routes = experiences.filter((e) => !RESERVED_SLUGS.has(e.slug));
 
-	console.log(
-		`[experiencias] ${routes.length} rutas generadas: ` +
-			routes.map((e) => e.slug).join(', '),
-	);
-
 	return routes.map((experience) => ({
 		params: { slug: experience.slug },
 		props: {
