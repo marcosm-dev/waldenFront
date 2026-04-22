@@ -223,56 +223,82 @@ const navLinks = [
 </style>
 
 <script>
-	const header = document.getElementById('main-header');
-	const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-	const mobileMenu = document.getElementById('mobile-menu');
-	const menuIcon = document.getElementById('menu-icon');
-	const closeIcon = document.getElementById('close-icon');
-	const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+	// Mismo tratamiento que PricingSection: con <ClientRouter /> (View
+	// Transitions) el DOM se reemplaza en cada navegación, así que los
+	// listeners enganchados a nivel de módulo mueren con los nodos viejos.
+	// Reinicializamos en cada `astro:page-load`.
 
-	let isMenuOpen = false;
+	// El scroll handler va sobre window (no desaparece en las navegaciones),
+	// así que lo registramos UNA sola vez para evitar duplicados. Lo demás
+	// se recablea en cada página.
+	let scrollHandlerBound = false;
+	let currentHeader: HTMLElement | null = null;
 
-	// Handle scroll effect
 	const handleScroll = () => {
+		if (!currentHeader) return;
 		const isScrolled = window.scrollY > 50;
 
 		if (isScrolled) {
-			header?.classList.remove('header-transparent', 'py-6');
-			header?.classList.add('header-scrolled', 'py-4');
+			currentHeader.classList.remove('header-transparent', 'py-6');
+			currentHeader.classList.add('header-scrolled', 'py-4');
 		} else {
-			header?.classList.add('header-transparent', 'py-6');
-			header?.classList.remove('header-scrolled', 'py-4');
+			currentHeader.classList.add('header-transparent', 'py-6');
+			currentHeader.classList.remove('header-scrolled', 'py-4');
 		}
 	};
 
-	// Handle mobile menu toggle
-	const toggleMenu = () => {
-		isMenuOpen = !isMenuOpen;
+	function setupHeader() {
+		const header = document.getElementById('main-header');
+		const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+		const mobileMenu = document.getElementById('mobile-menu');
+		const menuIcon = document.getElementById('menu-icon');
+		const closeIcon = document.getElementById('close-icon');
+		const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
 
-		if (isMenuOpen) {
-			mobileMenu?.classList.remove('hidden');
-			menuIcon?.classList.add('hidden');
-			closeIcon?.classList.remove('hidden');
-		} else {
-			mobileMenu?.classList.add('hidden');
-			menuIcon?.classList.remove('hidden');
-			closeIcon?.classList.add('hidden');
-		}
-	};
+		// Actualizamos la referencia al header actual (el nodo cambia tras una
+		// view transition aunque el id sea el mismo).
+		currentHeader = header;
 
-	// Close mobile menu when clicking a link
-	mobileNavLinks.forEach(link => {
-		link.addEventListener('click', () => {
+		let isMenuOpen = false;
+
+		const closeMenu = () => {
 			isMenuOpen = false;
 			mobileMenu?.classList.add('hidden');
 			menuIcon?.classList.remove('hidden');
 			closeIcon?.classList.add('hidden');
+		};
+
+		const toggleMenu = () => {
+			isMenuOpen = !isMenuOpen;
+
+			if (isMenuOpen) {
+				mobileMenu?.classList.remove('hidden');
+				menuIcon?.classList.add('hidden');
+				closeIcon?.classList.remove('hidden');
+			} else {
+				closeMenu();
+			}
+		};
+
+		// Si antes quedó abierto en otra página, aseguramos estado cerrado al
+		// entrar en ésta.
+		closeMenu();
+
+		mobileNavLinks.forEach((link) => {
+			link.addEventListener('click', closeMenu);
 		});
-	});
 
-	window.addEventListener('scroll', handleScroll);
-	mobileMenuBtn?.addEventListener('click', toggleMenu);
+		mobileMenuBtn?.addEventListener('click', toggleMenu);
 
-	// Initial check
-	handleScroll();
+		// Estado inicial del scroll para la nueva página.
+		handleScroll();
+	}
+
+	// Scroll listener global, sólo una vez por sesión de la SPA.
+	if (!scrollHandlerBound) {
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		scrollHandlerBound = true;
+	}
+
+	document.addEventListener('astro:page-load', setupHeader);
 </script>
