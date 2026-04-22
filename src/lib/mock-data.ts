@@ -320,7 +320,7 @@ export const contactData: ContactData = {
 	description: "Escríbenos y cuéntanos qué experiencia te gustaría vivir. Te responderemos lo antes posible para organizar tu escapada.",
 	email: "info@walden-adventures.com",
 	phone: "+34647067949",
-	whatsapp: "3464706794",
+	whatsapp: "34647067949",
 	instagram: "@waldenadventuresgc",
 	instagramUrl: "https://instagram.com/waldenadventuresgc",
 	location: "Gran Canaria, España",
