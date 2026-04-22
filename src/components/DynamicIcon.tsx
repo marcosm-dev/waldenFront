@@ -1,6 +1,6 @@
 import { icons, type LucideProps } from 'lucide-react';
 
-interface Props extends LucideProps {
+interface Props extends Omit<LucideProps, 'name'> {
 	name: string | null | undefined;
 }
 
