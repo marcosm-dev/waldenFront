@@ -1,23 +1,39 @@
 /**
- * Mock temporal para los campos extendidos de una Experience que
- * todavía NO existen en Strapi. Cuando añadas estos campos en
- * el content-type de Strapi (tagline, longDescription, highlights,
- * includes, price, duration, difficulty, groupSize), puedes borrar
- * este archivo y `fillExperienceWithMock` devolverá directamente
- * los valores reales.
+ * Doble propósito de este archivo:
  *
- * El mock por slug se mergea con los datos reales: cualquier
- * campo presente en Strapi gana sobre el mock.
+ *   1. FALLBACK EN RUNTIME — `fillExperienceWithMock()` se importa en
+ *      `src/pages/[slug].astro` y rellena los campos que aún no tengas
+ *      en Strapi. Cuando Strapi devuelve un valor, ese gana; cuando
+ *      no, el mock evita que la página se vea rota.
+ *
+ *   2. REFERENCIA DE DATOS — úsalo como fuente para copiar contenido
+ *      al CMS. Cada entrada de `MOCKS_BY_SLUG` corresponde al slug de
+ *      una experiencia en Strapi.
+ *
+ * Campos a añadir al content-type `Experience` en Strapi:
+ *   • tagline         → Text (short)
+ *   • longDescription → Text (long) o Rich text (blocks)
+ *   • price           → Number (decimal)
+ *   • duration        → Text (short)
+ *   • difficulty      → Enumeration con valores: easy | moderate | hard
+ *   • groupSize       → Text (short)
+ *   • highlights      → Repeatable Component (ej. experience.bullet) con un único campo `text` (Text short, required)
+ *   • includes        → Repeatable Component (mismo componente) con el campo `text`
+ *
+ * Conforme vayas creando cada campo en Strapi, muévelo de la zona
+ * comentada al bloque activo de `EXPERIENCE_FIELDS` en `src/lib/data.ts`
+ * para que el query empiece a pedirlo. Cuando todos estén en Strapi
+ * y con datos en cada experiencia, puedes borrar este archivo.
  */
 
-import type { StrapiExperience } from './data';
+import { ExperienceDifficulty, type StrapiExperience } from './data';
 
 export interface ExperienceMockFields {
 	tagline: string;
 	longDescription: string;
-	price: string;
+	price: number | string;
 	duration: string;
-	difficulty: string;
+	difficulty: ExperienceDifficulty | string;
 	groupSize: string;
 	highlights: Array<{ text: string }>;
 	includes: Array<{ text: string }>;
@@ -33,9 +49,32 @@ const MOCKS_BY_SLUG: Record<string, Partial<ExperienceMockFields>> = {
 		tagline: 'Rutas guiadas por Gran Canaria',
 		longDescription:
 			'Recorre los senderos más espectaculares de la isla acompañado por guías locales expertos. Descubre paisajes únicos, flora endémica y miradores escondidos mientras conectas con la naturaleza a tu propio ritmo.',
-		price: '45€',
+		price: 45,
 		duration: '4-6 horas',
-		difficulty: 'Moderada',
+		difficulty: ExperienceDifficulty.MODERATE,
+		groupSize: '2-8 personas',
+		highlights: [
+			{ text: 'Rutas exclusivas fuera de los caminos turísticos' },
+			{ text: 'Guía local con formación en botánica y geología' },
+			{ text: 'Paradas fotográficas en los mejores miradores' },
+			{ text: 'Historia y leyendas de cada lugar' },
+		],
+		includes: [
+			{ text: 'Guía profesional' },
+			{ text: 'Picnic de producto local' },
+			{ text: 'Seguro de actividad' },
+			{ text: 'Transporte al punto de inicio' },
+			{ text: 'Bastones de trekking' },
+			{ text: 'Agua y snacks' },
+		],
+	},
+	caminatas: {
+		tagline: 'Senderismo en la naturaleza',
+		longDescription:
+			'Recorre los senderos más espectaculares de la isla acompañado por guías locales expertos. Descubre paisajes únicos, flora endémica y miradores escondidos mientras conectas con la naturaleza a tu propio ritmo.',
+		price: 30,
+		duration: '4-6 horas',
+		difficulty: ExperienceDifficulty.MODERATE,
 		groupSize: '2-8 personas',
 		highlights: [
 			{ text: 'Rutas exclusivas fuera de los caminos turísticos' },
@@ -56,9 +95,9 @@ const MOCKS_BY_SLUG: Record<string, Partial<ExperienceMockFields>> = {
 		tagline: 'Aventura en el océano Atlántico',
 		longDescription:
 			'Navega por las calas más recónditas de la costa grancanaria en kayak. Una experiencia íntima con el mar donde podrás ver delfines, tortugas y acantilados imposibles de alcanzar por tierra.',
-		price: '55€',
+		price: 47.5,
 		duration: '3 horas',
-		difficulty: 'Fácil',
+		difficulty: ExperienceDifficulty.EASY,
 		groupSize: '2-6 personas',
 		highlights: [
 			{ text: 'Travesía por calas vírgenes solo accesibles por mar' },
@@ -75,11 +114,34 @@ const MOCKS_BY_SLUG: Record<string, Partial<ExperienceMockFields>> = {
 			{ text: 'Bebida y fruta al final' },
 		],
 	},
+	'paddle-surf': {
+		tagline: 'Navega sobre el mar de pie',
+		longDescription:
+			'Disfruta del mar de forma relajada y accesible deslizándote sobre el agua en paddle surf. Una actividad perfecta para todos los niveles con la que descubrirás la costa desde una perspectiva única.',
+		price: 47.5,
+		duration: '2-3 horas',
+		difficulty: ExperienceDifficulty.EASY,
+		groupSize: '2-8 personas',
+		highlights: [
+			{ text: 'Briefing de técnica y seguridad en tierra' },
+			{ text: 'Salida guiada por aguas tranquilas' },
+			{ text: 'Paradas para baño y snorkel' },
+			{ text: 'Material de última generación' },
+		],
+		includes: [
+			{ text: 'Tabla y remo' },
+			{ text: 'Chaleco salvavidas' },
+			{ text: 'Instructor titulado' },
+			{ text: 'Seguro de actividad' },
+			{ text: 'Fotografías de la experiencia' },
+			{ text: 'Comida al aire libre' },
+		],
+	},
 	yoga: {
 		tagline: 'Conexión mente-cuerpo-naturaleza',
 		longDescription:
 			'Sesiones de yoga al amanecer o atardecer en enclaves naturales únicos. Una práctica consciente pensada para desconectar del ritmo urbano y encontrar calma en los paisajes volcánicos y costeros de la isla.',
-		price: '35€',
+		price: 35,
 		duration: '90 minutos',
 		difficulty: 'Todos los niveles',
 		groupSize: '4-10 personas',
@@ -100,9 +162,9 @@ const MOCKS_BY_SLUG: Record<string, Partial<ExperienceMockFields>> = {
 		tagline: 'Explora la isla sin esfuerzo',
 		longDescription:
 			'Rutas en bicicleta eléctrica por pueblos, barrancos y costa. Cubre más terreno, disfruta de las subidas y descubre rincones auténticos de Gran Canaria con una asistencia eléctrica que hace la experiencia accesible para todos.',
-		price: '65€',
+		price: 65,
 		duration: '4 horas',
-		difficulty: 'Fácil',
+		difficulty: ExperienceDifficulty.EASY,
 		groupSize: '2-6 personas',
 		highlights: [
 			{ text: 'E-bikes de gama alta con autonomía garantizada' },
@@ -122,17 +184,17 @@ const MOCKS_BY_SLUG: Record<string, Partial<ExperienceMockFields>> = {
 };
 
 /**
- * Mock genérico que se aplica a cualquier experiencia que no
- * tenga una entrada específica en MOCKS_BY_SLUG. Pensado para
- * que cualquier slug nuevo siga mostrando la página completa.
+ * Mock genérico — se aplica a cualquier experiencia que no
+ * tenga entrada específica en MOCKS_BY_SLUG. Pensado para que
+ * cualquier slug nuevo siga mostrando la página completa.
  */
 const DEFAULT_MOCK: ExperienceMockFields = {
 	tagline: 'Experiencia Walden en la naturaleza',
 	longDescription:
 		'Una experiencia cuidadosamente diseñada para conectarte con el paisaje, la cultura y el ritmo auténtico de Gran Canaria. Pequeños grupos, guías locales y enfoque en la experiencia, no en la masificación.',
-	price: '50€',
+	price: 50,
 	duration: '3-4 horas',
-	difficulty: 'Moderada',
+	difficulty: ExperienceDifficulty.MODERATE,
 	groupSize: '2-8 personas',
 	highlights: [
 		{ text: 'Grupos reducidos para una experiencia personal' },

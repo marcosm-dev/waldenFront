@@ -18,7 +18,9 @@ import Button from '../components/ui/Button.astro';
 import DynamicIcon from '../components/DynamicIcon';
 import {
 	getAllExperiences,
+	getDifficultyLabel,
 	getImageUrl,
+	getStartingPrice,
 	type StrapiExperience,
 	type StrapiImage,
 } from '../lib/data';
@@ -49,9 +51,23 @@ interface Props {
 
 const { experience: rawExperience, allExperiences } = Astro.props;
 
-// Mergea datos reales con el mock (rellena campos que aún
-// no estén definidos en Strapi).
+// Mergeamos los datos reales de Strapi con un mock de fallback.
+// Strapi gana cuando tiene el campo relleno; el mock solo rellena
+// huecos. Conforme vayas añadiendo los campos al CMS, el mock se
+// vuelve irrelevante y se puede borrar `experiences-mock.ts`.
 const experience = fillExperienceWithMock(rawExperience);
+
+// Con el mock aplicado siempre hay datos, pero mantenemos las
+// guardas por si en el futuro algún campo se queda vacío.
+const highlights = experience.highlights ?? [];
+const includes = experience.includes ?? [];
+const hasSidebarInfo =
+	!!experience.duration || !!experience.difficulty || !!experience.groupSize;
+
+// Precio "de partida": si la experiencia tiene planes, mostramos el
+// más barato precedido de "desde". Si no, el precio único.
+const startingPrice = getStartingPrice(experience);
+const hasPrice = startingPrice.amount !== null;
 
 // Primer detail → icono + imagen de cabecera
 const primaryDetail = experience.details?.[0];
@@ -140,12 +156,14 @@ const pageDescription = experience.longDescription || shortDescription || siteSe
 								color="hsl(var(--cream))"
 							/>
 						</div>
-						<p
-							class="font-body text-sm tracking-[0.2em] uppercase"
-							style="color: hsl(var(--cream) / 0.85);"
-						>
-							{experience.tagline}
-						</p>
+						{experience.tagline && (
+							<p
+								class="font-body text-sm tracking-[0.2em] uppercase"
+								style="color: hsl(var(--cream) / 0.85);"
+							>
+								{experience.tagline}
+							</p>
+						)}
 					</div>
 					<h1
 						class="font-heading text-5xl md:text-7xl max-w-3xl leading-tight"
@@ -162,30 +180,34 @@ const pageDescription = experience.longDescription || shortDescription || siteSe
 					<div class="grid lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
 						{/* Main column */}
 						<div class="lg:col-span-2 space-y-12">
-							<div>
-								<p
-									class="font-body text-sm tracking-[0.2em] uppercase mb-4"
-									style="color: hsl(var(--ocean));"
-								>
-									La experiencia
-								</p>
-								<p class="font-body text-foreground text-lg leading-relaxed mb-6">
-									{experience.longDescription}
-								</p>
-								{shortDescription && shortDescription !== experience.longDescription && (
-									<p class="font-body text-muted-foreground leading-relaxed">
-										{shortDescription}
+							{(experience.longDescription || shortDescription) && (
+								<div>
+									<p
+										class="font-body text-sm tracking-[0.2em] uppercase mb-4"
+										style="color: hsl(var(--ocean));"
+									>
+										La experiencia
 									</p>
-								)}
-							</div>
+									{experience.longDescription && (
+										<p class="font-body text-foreground text-lg leading-relaxed mb-6">
+											{experience.longDescription}
+										</p>
+									)}
+									{shortDescription && shortDescription !== experience.longDescription && (
+										<p class="font-body text-muted-foreground leading-relaxed">
+											{shortDescription}
+										</p>
+									)}
+								</div>
+							)}
 
-							{experience.highlights.length > 0 && (
+							{highlights.length > 0 && (
 								<div>
 									<h2 class="font-heading text-3xl text-foreground mb-6">
 										Lo que vivirás
 									</h2>
 									<ul class="space-y-3">
-										{experience.highlights.map((h) => (
+										{highlights.map((h) => (
 											<li class="flex items-start gap-3">
 												<span
 													class="mt-1 w-5 h-5 rounded-full flex items-center justify-center shrink-0"
@@ -207,13 +229,13 @@ const pageDescription = experience.longDescription || shortDescription || siteSe
 								</div>
 							)}
 
-							{experience.includes.length > 0 && (
+							{includes.length > 0 && (
 								<div>
 									<h2 class="font-heading text-3xl text-foreground mb-6">
 										Qué incluye
 									</h2>
 									<div class="grid sm:grid-cols-2 gap-3">
-										{experience.includes.map((item) => (
+										{includes.map((item) => (
 											<div
 												class="flex items-center gap-3 p-4 rounded-xl"
 												style="background-color: hsl(var(--secondary) / 0.4);"
@@ -240,71 +262,86 @@ const pageDescription = experience.longDescription || shortDescription || siteSe
 								class="sticky top-28 rounded-2xl border bg-card shadow-card p-6 md:p-8"
 								style="border-color: hsl(var(--border));"
 							>
-								<div
-									class="flex items-baseline gap-2 mb-6 pb-6 border-b"
-									style="border-color: hsl(var(--border));"
-								>
-									<span
-										class="font-heading text-4xl"
-										style="color: hsl(var(--ocean));"
+								{hasPrice && (
+									<div
+										class="flex items-baseline gap-2 mb-6 pb-6 border-b"
+										style="border-color: hsl(var(--border));"
 									>
-										{experience.price}
-									</span>
-									<span class="font-body text-sm text-muted-foreground">
-										/ persona
-									</span>
-								</div>
+										{startingPrice.isStartingFrom && (
+											<span class="font-body text-sm text-muted-foreground">
+												desde
+											</span>
+										)}
+										<span
+											class="font-heading text-4xl"
+											style="color: hsl(var(--ocean));"
+										>
+										<small class="text-sm text-muted-foreground">desde</small>	{startingPrice.amount}€
+										</span>
+										<span class="font-body text-sm text-muted-foreground">
+											/ persona
+										</span>
+									</div>
+								)}
 
-								<ul class="space-y-4 mb-8">
-									<li class="flex items-center gap-3">
-										<DynamicIcon
-											name="clock"
-											size={18}
-											color="hsl(var(--ocean))"
-											className="shrink-0"
-										/>
-										<div>
-											<p class="font-body text-xs text-muted-foreground">
-												Duración
-											</p>
-											<p class="font-body text-sm text-foreground">
-												{experience.duration}
-											</p>
-										</div>
-									</li>
-									<li class="flex items-center gap-3">
-										<DynamicIcon
-											name="activity"
-											size={18}
-											color="hsl(var(--ocean))"
-											className="shrink-0"
-										/>
-										<div>
-											<p class="font-body text-xs text-muted-foreground">
-												Dificultad
-											</p>
-											<p class="font-body text-sm text-foreground">
-												{experience.difficulty}
-											</p>
-										</div>
-									</li>
-									<li class="flex items-center gap-3">
-										<DynamicIcon
-											name="users"
-											size={18}
-											color="hsl(var(--ocean))"
-											className="shrink-0"
-										/>
-										<div>
-											<p class="font-body text-xs text-muted-foreground">
-												Grupo
-											</p>
-											<p class="font-body text-sm text-foreground">
-												{experience.groupSize}
-											</p>
-										</div>
-									</li>
-								</ul>
+								{hasSidebarInfo && (
+									<ul class="space-y-4 mb-8">
+										{experience.duration && (
+											<li class="flex items-center gap-3">
+												<DynamicIcon
+													name="clock"
+													size={18}
+													color="hsl(var(--ocean))"
+													className="shrink-0"
+												/>
+												<div>
+													<p class="font-body text-xs text-muted-foreground">
+														Duración
+													</p>
+													<p class="font-body text-sm text-foreground">
+														{experience.duration}
+													</p>
+												</div>
+											</li>
+										)}
+										{experience.difficulty && (
+											<li class="flex items-center gap-3">
+												<DynamicIcon
+													name="activity"
+													size={18}
+													color="hsl(var(--ocean))"
+													className="shrink-0"
+												/>
+												<div>
+													<p class="font-body text-xs text-muted-foreground">
+														Dificultad
+													</p>
+													<p class="font-body text-sm text-foreground">
+														{getDifficultyLabel(experience.difficulty)}
+													</p>
+												</div>
+											</li>
+										)}
+										{experience.groupSize && (
+											<li class="flex items-center gap-3">
+												<DynamicIcon
+													name="users"
+													size={18}
+													color="hsl(var(--ocean))"
+													className="shrink-0"
+												/>
+												<div>
+													<p class="font-body text-xs text-muted-foreground">
+														Grupo
+													</p>
+													<p class="font-body text-sm text-foreground">
+														{experience.groupSize}
+													</p>
+												</div>
+											</li>
+										)}
+									</ul>
+								)}
 
 								<Button
 									href={whatsappHref}
@@ -344,7 +381,7 @@ const pageDescription = experience.longDescription || shortDescription || siteSe
 									return (
 										<a
 											href={`/${other.slug}`}
-											class="group relative aspect-[4/5] rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-500 block"
+											class="group relative aspect-4/5 rounded-2xl overflow-hidden shadow-card hover:shadow-elevated transition-all duration-500 block"
 										>
 											<img
 												src={getImageUrl(otherImg, 'medium')}

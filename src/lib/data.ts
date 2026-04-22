@@ -55,8 +55,21 @@ export interface StrapiPricingPlan {
 	id: string;
 	title: string;
 	subtitle: string | null;
-	price: string;
+	/** Strapi devuelve el precio como número (ej: 47.5). Aceptamos string por compatibilidad. */
+	price: number | string;
 	description: string | null;
+}
+
+/**
+ * Entrada del array `plans`. Cada entrada contiene UN único plan
+ * (no un grupo / no un array). El `name` del nivel superior suele
+ * coincidir con `plan.title` y se usa como etiqueta organizativa
+ * desde el CMS.
+ */
+export interface StrapiPricingGroup {
+	documentId: string;
+	name: string;
+	plan: StrapiPricingPlan;
 }
 
 export interface StrapiPricingDetail {
@@ -71,8 +84,96 @@ export interface StrapiPricing {
 	title: string | null;
 	subtitle: string | null;
 	description: string | null;
-	plan: StrapiPricingPlan[];
+	/**
+	 * Dos niveles: grupos de planes → planes individuales.
+	 * Ej: [{ name: "Individual", plan: [...] }, { name: "Grupos", plan: [...] }]
+	 */
+	plans: StrapiPricingGroup[];
 	details: StrapiPricingDetail[];
+}
+
+// ============================================
+// EXPERIENCES: ENUMS
+// ============================================
+
+/**
+ * Valores canónicos para el campo `difficulty` de una Experience.
+ * Son los strings que debe devolver Strapi (tipo Enumeration con
+ * estos tres valores exactos).
+ */
+export enum ExperienceDifficulty {
+	EASY = 'easy',
+	MODERATE = 'moderate',
+	HARD = 'hard',
+}
+
+/** Etiquetas legibles para mostrar al usuario */
+export const ExperienceDifficultyLabels: Record<ExperienceDifficulty, string> = {
+	[ExperienceDifficulty.EASY]: 'Fácil',
+	[ExperienceDifficulty.MODERATE]: 'Moderada',
+	[ExperienceDifficulty.HARD]: 'Difícil',
+};
+
+/**
+ * Convierte cualquier valor recibido de Strapi (enum o string legacy)
+ * a la etiqueta legible. Si el valor no coincide con ningún enum,
+ * devuelve el string original (útil para mocks con "Todos los niveles",
+ * "Moderada", etc.).
+ */
+export function getDifficultyLabel(value: string | null | undefined): string {
+	if (!value) return '';
+	if (value in ExperienceDifficultyLabels) {
+		return ExperienceDifficultyLabels[value as ExperienceDifficulty];
+	}
+	return value;
+}
+
+/**
+ * Normaliza un valor de precio (puede venir como "47.5", 47.5, null, "")
+ * a un number. Devuelve null si no es un precio válido.
+ */
+function toNumericPrice(value: number | string | null | undefined): number | null {
+	if (value == null || value === '') return null;
+	const n = typeof value === 'string' ? parseFloat(value) : value;
+	return Number.isFinite(n) ? n : null;
+}
+
+export interface StartingPrice {
+	/** Precio a mostrar (mínimo de los planes, o precio único si no hay planes). */
+	amount: number | null;
+	/**
+	 * true cuando el precio proviene de un rango de planes (≥ 2 precios distintos).
+	 * Se usa para pintar "desde X€" en lugar de "X€".
+	 */
+	isStartingFrom: boolean;
+}
+
+/**
+ * Calcula el precio a mostrar en la tarjeta de reserva:
+ *   • Si la experiencia tiene varios planes con precios distintos,
+ *     devuelve el mínimo y marca `isStartingFrom = true` (→ "desde X€").
+ *   • Si todos los planes tienen el mismo precio (o solo hay uno),
+ *     devuelve ese precio sin marca de "desde".
+ *   • Si no hay planes, cae al campo `price` de la Experience.
+ *   • Si tampoco hay `price`, devuelve `amount: null` para que la
+ *     página pueda ocultar el bloque.
+ */
+export function getStartingPrice(experience: {
+	plans?: StrapiExperiencePlan[] | null;
+	price?: number | string | null;
+}): StartingPrice {
+	const planPrices =
+		experience.plans
+			?.map((p) => toNumericPrice(p?.price))
+			.filter((n): n is number => n !== null) ?? [];
+
+	if (planPrices.length > 0) {
+		const min = Math.min(...planPrices);
+		const max = Math.max(...planPrices);
+		return { amount: min, isStartingFrom: min !== max };
+	}
+
+	return { amount: toNumericPrice(experience.price ?? null), isStartingFrom: false };
 }
 
 // Experiences de Strapi
@@ -83,11 +184,33 @@ export interface StrapiExperienceDetail {
 	image: StrapiImage | null;
 }
 
+/**
+ * Plan asociado a una Experience. Asumimos una relación plana
+ * (Experience → Plans) con al menos `price`. Si en Strapi la
+ * relación llega anidada como `{ plan: { ... } }` (igual que en
+ * la section Pricing) aplana el resultado antes de pasarlo al
+ * helper, o ajusta esta interface.
+ */
+export interface StrapiExperiencePlan {
+	id?: string;
+	documentId?: string;
+	title?: string | null;
+	subtitle?: string | null;
+	description?: string | null;
+	price: number | string | null;
+}
+
 export interface StrapiExperience {
 	documentId: string;
 	name: string;
 	slug: string;
 	details: StrapiExperienceDetail[];
+	/**
+	 * Planes asociados (opcional). Cuando existen, la página de
+	 * detalle muestra "desde {min price} / persona" en vez del
+	 * precio único.
+	 */
+	plans?: StrapiExperiencePlan[] | null;
 	/**
 	 * Campos extendidos para la página de detalle.
 	 * Todos opcionales: si no están definidos todavía en Strapi
@@ -95,9 +218,15 @@ export interface StrapiExperience {
 	 */
 	tagline?: string | null;
 	longDescription?: string | null;
-	price?: string | null;
+	price?: number | string | null;
 	duration?: string | null;
-	difficulty?: string | null;
+	/**
+	 * Idealmente uno de los valores de `ExperienceDifficulty` (si Strapi
+	 * lo tiene configurado como Enumeration), pero aceptamos `string`
+	 * para no romper mocks o datos antiguos. Usa `getDifficultyLabel()`
+	 * para mostrarlo al usuario.
+	 */
+	difficulty?: ExperienceDifficulty | string | null;
 	groupSize?: string | null;
 	highlights?: Array<{ id?: string; text: string }> | null;
 	includes?: Array<{ id?: string; text: string }> | null;
@@ -190,6 +319,29 @@ const HOME_QUERY = `
 query {
   home {
     documentId
+		Pricing {
+      description
+      details {
+        desc
+        icon
+        id
+        title
+      }
+      id
+      subtitle
+      title
+      plans {
+        name
+        documentId
+        plan {
+          description
+          id
+          price
+          subtitle
+          title
+        }
+      }
+    }
 		Experiences {
       documentId
       details {
@@ -300,13 +452,44 @@ export async function getHome(): Promise<StrapiHome | null> {
  * opcionales en Strapi: si no existen aún, el servidor los
  * devolverá como null/undefined y la página usará defaults.
  */
+/**
+ * Campos del content-type `Experience` en Strapi.
+ *
+ * FIELDS PENDIENTES DE CONFIRMAR / ACTIVAR:
+ *   plans  (relación a los planes de Pricing — muchos-a-muchos o
+ *           componente repeatable). Cuando me confirmes el nombre
+ *           y forma exacta de la relación, descomenta el bloque de
+ *           abajo y ajusta la forma si es necesario. Mientras tanto
+ *           `experiences-mock.ts` puede simular `plans` si quieres
+ *           ver el "desde XX€" en local.
+ *
+ *   Variante A — relación directa (si en Strapi añadiste Experience →
+ *   Plan como many-to-many / one-to-many):
+ *     plans {
+ *       id
+ *       title
+ *       price
+ *     }
+ *
+ *   Variante B — mismo componente anidado que Pricing (plans[].plan):
+ *     plans {
+ *       name
+ *       documentId
+ *       plan {
+ *         id
+ *         title
+ *         price
+ *       }
+ *     }
+ *   Si usas esta variante, habrá que aplanar antes de pasarlo a
+ *   `getStartingPrice()`.
+ */
 const EXPERIENCE_FIELDS = `
   documentId
   name
   slug
   tagline
   longDescription
-  price
   duration
   difficulty
   groupSize
