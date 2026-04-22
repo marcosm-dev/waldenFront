@@ -191,29 +191,49 @@ const hasAnyContent =
 </style>
 
 <script>
-  const accordion = document.querySelector('.pricing-accordion');
-  const items = accordion?.querySelectorAll('.pricing-item');
+  // Se ejecuta en la carga inicial Y tras cada View Transition (ClientRouter).
+  // Sin esto, al navegar entre páginas el DOM se reemplaza y los listeners
+  // anteriores se pierden, dejando el accordion "muerto".
+  function setupPricingAccordion() {
+    const accordions = document.querySelectorAll<HTMLElement>('.pricing-accordion');
+    if (accordions.length === 0) return;
 
-  items?.forEach(item => {
-    const trigger = item.querySelector('.pricing-trigger');
+    accordions.forEach((accordion) => {
+      const items = accordion.querySelectorAll<HTMLElement>('.pricing-item');
 
-    trigger?.addEventListener('click', () => {
-      const isExpanded = item.classList.contains('expanded');
+      items.forEach((item) => {
+        const trigger = item.querySelector<HTMLButtonElement>('.pricing-trigger');
+        if (!trigger) return;
+        // Guard para evitar doble enganche si por alguna razón la función
+        // corre dos veces sobre los mismos nodos.
+        if (trigger.dataset.pricingBound === 'true') return;
+        trigger.dataset.pricingBound = 'true';
 
-      items.forEach(otherItem => {
-        if (otherItem !== item) {
-          otherItem.classList.remove('expanded');
-          otherItem.querySelector('.pricing-trigger')?.setAttribute('aria-expanded', 'false');
-        }
+        trigger.addEventListener('click', () => {
+          const isExpanded = item.classList.contains('expanded');
+
+          items.forEach((otherItem) => {
+            if (otherItem !== item) {
+              otherItem.classList.remove('expanded');
+              otherItem
+                .querySelector('.pricing-trigger')
+                ?.setAttribute('aria-expanded', 'false');
+            }
+          });
+
+          if (isExpanded) {
+            item.classList.remove('expanded');
+            trigger.setAttribute('aria-expanded', 'false');
+          } else {
+            item.classList.add('expanded');
+            trigger.setAttribute('aria-expanded', 'true');
+          }
+        });
       });
-
-      if (isExpanded) {
-        item.classList.remove('expanded');
-        trigger.setAttribute('aria-expanded', 'false');
-      } else {
-        item.classList.add('expanded');
-        trigger.setAttribute('aria-expanded', 'true');
-      }
     });
-  });
+  }
+
+  // `astro:page-load` dispara en la carga inicial y después de cada
+  // View Transition, así que cubre ambos casos con un único handler.
+  document.addEventListener('astro:page-load', setupPricingAccordion);
 </script>
