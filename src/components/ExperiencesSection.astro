@@ -51,32 +51,30 @@ const getImageAlt = (image: StrapiImage | null, fallback: string): string => {
 				return (
 					<a
 						href={`/${experience.slug}`}
-						class="group relative overflow-hidden rounded-2xl shadow-card hover:shadow-elevated transition-all duration-500 cursor-pointer block"
+						class="group relative overflow-hidden rounded-2xl shadow-card hover:shadow-elevated transition-all duration-500 cursor-pointer flex flex-col min-h-80 md:min-h-96"
 						style={`animation-delay: ${index * 0.1}s`}
 					>
-						<div class="relative aspect-4/3 overflow-hidden">
-							<img
-								src={getImageUrl(detail.image)}
-								srcset={getImageSrcset(detail.image)}
-								sizes="(max-width: 768px) 100vw, 50vw"
-								alt={getImageAlt(detail.image, experience.name)}
-								class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-								loading="lazy"
-							/>
-						</div>
+						<img
+							src={getImageUrl(detail.image)}
+							srcset={getImageSrcset(detail.image)}
+							sizes="(max-width: 768px) 100vw, 50vw"
+							alt={getImageAlt(detail.image, experience.name)}
+							class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+							loading="lazy"
+						/>
 						<div class="absolute inset-0 bg-linear-to-t from-forest/90 via-forest/40 to-transparent" />
-						<div class="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+						<div class="relative z-10 mt-auto p-6 md:p-8">
 							<div class="flex items-center gap-3 mb-3">
 								<DynamicIcon
 									name={detail.icon}
 									size={24}
-									className="text-ocean-light"
+									className="text-ocean-light shrink-0"
 								/>
-								<h3 class="font-heading text-2xl md:text-3xl text-cream">
+								<h3 class="font-heading text-2xl md:text-3xl text-cream min-w-0 wrap-break-word line-clamp-2">
 									{experience.name}
 								</h3>
 							</div>
-							<p class="font-body text-cream/85 leading-relaxed">
+							<p class="font-body text-cream/85 leading-relaxed wrap-break-word line-clamp-6">
 								{detail.description}
 							</p>
 						</div>
